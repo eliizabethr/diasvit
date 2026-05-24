@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from '../users.service';
 import { UserAdminResponseDto } from '../dto/admin/user-admin-response.dto';
 import { CreateUserAdminRequestDto } from '../dto/admin/create-user-admin-request.dto';
@@ -6,14 +15,19 @@ import { UserRole } from '../entities/user.entity';
 import { AuthGuard } from '../../auth/auth.guard';
 import { AdminGuard } from '../../auth/admin.guard';
 import { UsersQueryAdminRequestDto } from '../dto/admin/users-query-admin-request.dto';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { PaginatedUsersAdminResponseDto } from '../dto/admin/paginated-users-admin-response.dto';
 
 @ApiBearerAuth('JwtAuth')
 @UseGuards(AuthGuard, AdminGuard)
 @Controller('admin/users')
 export class UsersAdminController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({ summary: 'Create a new user' })
   @ApiCreatedResponse({ type: UserAdminResponseDto })
@@ -65,7 +79,7 @@ export class UsersAdminController {
         lastName: user.lastName,
         dateOfBirth: user.dateOfBirth,
         applicationsCount: user.applications.length, // TODO: optimize
-        roles: user.roles as unknown as ('user' | 'admin')[], // TODO: check proper fix
+        roles: user.roles, // TODO: check proper fix
       })),
       page: result.page,
       limit: result.limit,
