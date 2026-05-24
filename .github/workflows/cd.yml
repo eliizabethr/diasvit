@@ -50,11 +50,6 @@ jobs:
         working-directory: src/api
         run: npm run build
 
-      - name: Prepare API production files
-        run: |
-          cp src/api/package.json src/api/dist/
-          cp src/api/package-lock.json src/api/dist/ || true
-
       - name: Setup Node.js for Web
         uses: actions/setup-node@v4
         with:
@@ -148,7 +143,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: web-build
-          path: ./web-dist
+          path: web-dist
 
       - name: Deploy Web to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
@@ -156,5 +151,5 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_DEPLOYMENT_TOKEN }}
           action: upload
           skip_app_build: true
-          app_location: ./web-dist
+          app_location: web-dist
           output_location: ""
