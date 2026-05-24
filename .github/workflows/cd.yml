@@ -1,0 +1,112 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/**'
+
+jobs:
+  determine-environment:
+    name: Determine deployment environment
+    runs-on: ubuntu-latest
+
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}
+
+    steps:
+      - name: Determine environment by branch
+        id: set-env
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+            echo "environment=production" >> "$GITHUB_OUTPUT"
+          elif [[ "${GITHUB_REF_NAME}" == release/* ]]; then
+            echo "environment=staging" >> "$GITHUB_OUTPUT"
+          else
+            echo "environment=none" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    name: Build application
+    runs-on: ubuntu-latest
+    needs: determine-environment
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js for backend
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/api/package-lock.json
+
+      - name: Install API dependencies
+        working-directory: src/api
+        run: npm ci
+
+      - name: Build API
+        working-directory: src/api
+        run: npm run build
+
+      - name: Setup Node.js for Web
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Install Web dependencies
+        working-directory: src/web
+        run: npm ci
+
+      - name: Build Web
+        working-directory: src/web
+        run: npm run build
+
+      - name: Upload API artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-build
+          path: src/api/dist
+
+      - name: Upload Web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: src/web/dist
+
+  deploy-staging-placeholder:
+    name: Deploy to Staging placeholder
+    runs-on: ubuntu-latest
+    needs:
+      - determine-environment
+      - build
+
+    if: needs.determine-environment.outputs.environment == 'staging'
+
+    environment:
+      name: staging
+
+    steps:
+      - name: Deployment
+        run: |
+          echo "Staging deployment"
+
+  deploy-production-placeholder:
+    name: Deploy to Production placeholder
+    runs-on: ubuntu-latest
+    needs:
+      - determine-environment
+      - build
+
+    if: needs.determine-environment.outputs.environment == 'production'
+
+    environment:
+      name: production
+
+    steps:
+      - name: Deployment
+        run: |
+          echo "Production deployment"
