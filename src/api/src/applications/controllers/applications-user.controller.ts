@@ -15,14 +15,19 @@ import { ApplicationsService } from '../applications.service';
 import { ApplicationUserResponseDto } from '../dto/user/application-user-response.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { CreateApplicationUserRequestDto } from '../dto/user/create-application-user-request.dto';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { PaginatedApplicationsUserResponseDto } from '../dto/user/paginated-applications-user-response.dto';
 
 @ApiBearerAuth('JwtAuth')
 @UseGuards(AuthGuard)
 @Controller('me/applications')
 export class ApplicationsUserController {
-  constructor(private readonly applicationsService: ApplicationsService) { }
+  constructor(private readonly applicationsService: ApplicationsService) {}
 
   @ApiOperation({
     summary: 'Create a new aid application for the current user.',

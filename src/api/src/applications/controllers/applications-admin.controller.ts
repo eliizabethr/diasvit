@@ -17,7 +17,12 @@ import { UpdateApplicationAdminRequestDto } from '../dto/admin/update-applicatio
 import { AdminGuard } from '../../auth/admin.guard';
 import { ApplicationAdminResponseDto } from '../dto/admin/application-admin-response.dto';
 import { ApplicationsQueryAdminRequestDto } from '../dto/admin/applications-query-admin-request.dto';
-import { ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { PaginatedApplicationsAdminResponseDto } from '../dto/admin/paginated-applications-admin-response.dto';
 import { ChangeApplicationStatusRequestDto } from '../dto/admin/change-application-status-request.dto';
 import { ApplicationStatusService } from 'src/application-status/application-status.service';
@@ -29,7 +34,7 @@ export class ApplicationsAdminController {
   constructor(
     private readonly applicationsService: ApplicationsService,
     private readonly applicationStatusService: ApplicationStatusService,
-  ) { }
+  ) {}
 
   @ApiOperation({ summary: 'Get all aid applications in the system.' })
   @ApiOkResponse({ type: PaginatedApplicationsAdminResponseDto })
@@ -76,7 +81,7 @@ export class ApplicationsAdminController {
           lastName: application.user.lastName,
           dateOfBirth: application.user.dateOfBirth,
           applicationsCount: application.user.applications.length,
-          roles: application.user.roles as unknown as ('user' | 'admin')[], // TODO: check proper fix
+          roles: application.user.roles, // TODO: check proper fix
         },
       })),
       page: result.page,
@@ -128,12 +133,14 @@ export class ApplicationsAdminController {
         lastName: application.user.lastName,
         dateOfBirth: application.user.dateOfBirth,
         applicationsCount: application.user.applications.length,
-        roles: application.user.roles as unknown as ('user' | 'admin')[], // TODO: check proper fix
+        roles: application.user.roles, // TODO: check proper fix
       },
     };
   }
 
-  @ApiOperation({ summary: 'Update the status of an aid application by application ID.' })
+  @ApiOperation({
+    summary: 'Update the status of an aid application by application ID.',
+  })
   @ApiOkResponse({ type: ApplicationAdminResponseDto })
   @HttpCode(HttpStatus.OK)
   @Patch(':id/status')
@@ -182,7 +189,7 @@ export class ApplicationsAdminController {
         lastName: application.user.lastName,
         dateOfBirth: application.user.dateOfBirth,
         applicationsCount: application.user.applications.length,
-        roles: application.user.roles as unknown as ('user' | 'admin')[], // TODO: check proper fix
+        roles: application.user.roles, // TODO: check proper fix
       },
     };
   }

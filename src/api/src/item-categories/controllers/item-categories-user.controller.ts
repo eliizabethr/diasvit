@@ -6,7 +6,7 @@ import { PaginatedItemCategoriesUserResponseDto } from '../dto/user/paginated-it
 
 @Controller('item-categories')
 export class ItemCategoriesUserController {
-  constructor(private readonly itemCategoriesService: ItemCategoriesService) { }
+  constructor(private readonly itemCategoriesService: ItemCategoriesService) {}
 
   @ApiOperation({ summary: 'Get all aid item categories.' })
   @ApiOkResponse({ type: PaginatedItemCategoriesUserResponseDto })

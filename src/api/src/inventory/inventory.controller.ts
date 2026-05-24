@@ -10,7 +10,12 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { InventoryService } from './inventory.service';
@@ -28,7 +33,7 @@ import { InventoryOperationsQueryRequestDto } from './dto/inventory-operationss-
 @UseGuards(AuthGuard, AdminGuard)
 @Controller('admin/inventory/items')
 export class InventoryController {
-  constructor(private readonly inventoryService: InventoryService) { }
+  constructor(private readonly inventoryService: InventoryService) {}
 
   @ApiOperation({ summary: 'Create a new inventory item.' })
   @ApiCreatedResponse({ type: InventoryItemResponseDto })

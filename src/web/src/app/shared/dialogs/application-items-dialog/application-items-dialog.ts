@@ -12,9 +12,9 @@ import {
 } from '../../../core/models/application.model';
 import { formatApplicationNumber } from '../../utils/application.util';
 
-export type ApplicationItemsDialogData = {
+export interface ApplicationItemsDialogData {
   application: UserApplication | AdminApplication;
-};
+}
 
 @Component({
   selector: 'app-application-items-dialog',
@@ -31,7 +31,7 @@ export class ApplicationItemsDialog {
   });
 
   readonly items = computed(() => {
-    return this.data.application.items as Array<UserApplicationItem | AdminApplicationItem>;
+    return this.data.application.items as (UserApplicationItem | AdminApplicationItem)[];
   });
 
   close(): void {
