@@ -11,6 +11,13 @@ const prod: Configuration = {
 };
 
 export const config = (): Configuration => {
-  // if appconfig, then return it
+  const isStaging = process.env.NODE_ENV === 'staging';
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  // TODO: if appconfig, then return it
+  if (isStaging || isProduction) {
+    return prod;
+  }
+
   return local;
 };
