@@ -1,0 +1,29 @@
+<div class="auth-layout">
+  <a class="auth-layout__logo" routerLink="/">
+    <span class="auth-layout__logo-mark">Д</span>
+    <span class="auth-layout__logo-text">Діасвіт Запоріжжя</span>
+  </a>
+
+  <main class="auth-layout__card">
+    <header class="auth-layout__header">
+      <h1 class="auth-layout__title">{{ title() }}</h1>
+
+      @if (subtitle()) {
+        <p class="auth-layout__subtitle">
+          {{ subtitle() }}
+        </p>
+      }
+    </header>
+
+    <section class="auth-layout__content">
+      <ng-content></ng-content>
+    </section>
+
+    @if (footerText() && footerLinkText() && footerLink()) {
+      <footer class="auth-layout__footer">
+        <span>{{ footerText() }}</span>
+        <a [routerLink]="footerLink()">{{ footerLinkText() }}</a>
+      </footer>
+    }
+  </main>
+</div>

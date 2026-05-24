@@ -1,0 +1,95 @@
+:host ::ng-deep .auth-layout__card {
+  width: min(100%, 780px);
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.register-form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+}
+
+.register-form__phone-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.register-form__phone {
+  flex: 1;
+}
+
+.register-form__code-button {
+  min-width: 150px;
+  min-height: 56px;
+  border-radius: 14px;
+  font-weight: 600;
+}
+
+.register-form__otp {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.register-form__label {
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.register-form__submit {
+  align-self: center;
+  width: min(100%, 360px);
+  min-height: 48px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.register-form__message {
+  margin: 0;
+  color: #047857;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.register-form__error {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+:host ::ng-deep .register-form__code-button .mdc-button__label,
+:host ::ng-deep .register-form__submit .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+:host ::ng-deep .register-form__submit {
+  --mdc-filled-button-container-color: #2563eb;
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+@media (max-width: 720px) {
+  .register-form__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .register-form__phone-row {
+    flex-direction: column;
+  }
+
+  .register-form__code-button {
+    width: 100%;
+  }
+}

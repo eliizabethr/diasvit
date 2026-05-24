@@ -1,0 +1,61 @@
+.category-dialog {
+  position: relative;
+  width: min(100%, 520px);
+  padding: 30px 34px 28px;
+  color: #1f2f5f;
+}
+
+.category-dialog__close {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  color: #1f2f5f;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.category-dialog__close:hover {
+  background: #eef4ff;
+}
+
+.category-dialog__title {
+  margin: 0 42px 24px 0;
+  color: #0d6efd;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.category-dialog__form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.category-dialog__error {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.category-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.category-dialog__primary {
+  min-width: 130px;
+}
+
+:host ::ng-deep .category-dialog__primary {
+  --mdc-filled-button-container-color: #0d6efd;
+  --mdc-filled-button-label-text-color: #ffffff;
+}

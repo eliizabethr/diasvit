@@ -1,0 +1,80 @@
+<div class="item-dialog">
+  <button type="button" class="item-dialog__close" aria-label="Закрити" (click)="close()">
+    ×
+  </button>
+
+  <h2 class="item-dialog__title">Оновити товар</h2>
+
+  <form class="item-dialog__form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="item-dialog__category-row">
+      <mat-form-field appearance="outline" class="item-dialog__category">
+        <mat-label>Категорія</mat-label>
+        <mat-select formControlName="categoryId">
+          @for (category of categories(); track category.id) {
+            <mat-option [value]="category.id">{{ category.name }}</mat-option>
+          }
+        </mat-select>
+
+        @if (form.controls.categoryId.invalid && form.controls.categoryId.touched) {
+          <mat-error>Оберіть категорію</mat-error>
+        }
+      </mat-form-field>
+
+      <button
+        type="button"
+        mat-stroked-button
+        class="item-dialog__add-category"
+        (click)="openAddCategoryDialog()"
+      >
+        +
+      </button>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Назва товару</mat-label>
+      <input matInput formControlName="name" />
+
+      @if (form.controls.name.hasError('required') && form.controls.name.touched) {
+        <mat-error>Введіть назву товару</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="item-dialog__grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Одиниця виміру</mat-label>
+        <mat-select formControlName="unit">
+          @for (unit of units; track unit) {
+            <mat-option [value]="unit">{{ unit }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Поточна кількість</mat-label>
+        <input matInput [value]="data.item.currentStock + ' ' + data.item.unit" disabled />
+      </mat-form-field>
+    </div>
+
+    <p class="item-dialog__hint">
+      У цьому вікні редагуються лише описові дані товару. Кількість на складі змінюється через окрему операцію обліку.
+    </p>
+
+    @if (errorMessage()) {
+      <p class="item-dialog__error">{{ errorMessage() }}</p>
+    }
+
+    <div class="item-dialog__actions">
+      <button type="button" mat-stroked-button (click)="close()" [disabled]="isSubmitting()">
+        Скасувати
+      </button>
+
+      <button type="submit" mat-flat-button class="item-dialog__primary" [disabled]="isSubmitting()">
+        @if (isSubmitting()) {
+          Оновлення...
+        } @else {
+          Оновити товар
+        }
+      </button>
+    </div>
+  </form>
+</div>

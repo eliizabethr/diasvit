@@ -1,0 +1,133 @@
+<section class="reports-page">
+  <div class="reports-page__heading">
+    <div>
+      <h2>Формування звітності</h2>
+      <p>Сформуйте звіт про надходження, видачу та залишок допомоги за категоріями.</p>
+    </div>
+  </div>
+
+  <div class="reports-card">
+    <form class="reports-filter" [formGroup]="form" (ngSubmit)="generateReport()">
+      <mat-form-field appearance="outline">
+        <mat-label>Дата з</mat-label>
+        <input matInput type="date" formControlName="dateFrom" />
+
+        @if (form.controls.dateFrom.hasError('required') && form.controls.dateFrom.touched) {
+          <mat-error>Оберіть дату початку</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Дата по</mat-label>
+        <input matInput type="date" formControlName="dateTo" />
+
+        @if (form.controls.dateTo.hasError('required') && form.controls.dateTo.touched) {
+          <mat-error>Оберіть дату завершення</mat-error>
+        }
+      </mat-form-field>
+
+      <button type="submit" mat-flat-button class="reports-filter__button" [disabled]="isLoading()">
+        @if (isLoading()) {
+          Генерація...
+        } @else {
+          Згенерувати звіт
+        }
+      </button>
+    </form>
+
+    @if (errorMessage()) {
+      <p class="reports-card__error">
+        {{ errorMessage() }}
+      </p>
+    }
+
+    @if (report()) {
+      <section class="report-result">
+        <div class="report-result__header">
+          <div>
+            <h3>Звіт за період</h3>
+            <p>
+              {{ formatDate(report()!.dateFrom) }} — {{ formatDate(report()!.dateTo) }}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            mat-stroked-button
+            class="report-result__export"
+            [disabled]="isExporting()"
+            (click)="exportReport()"
+          >
+            @if (isExporting()) {
+              Експорт...
+            } @else {
+              Експортувати звіт
+            }
+          </button>
+        </div>
+
+        <div class="report-stats">
+          <article class="report-stat-card">
+            <span class="report-stat-card__icon">⬇</span>
+            <div>
+              <p>Надійшло допомоги</p>
+              <strong>{{ report()!.totals.received }}</strong>
+            </div>
+          </article>
+
+          <article class="report-stat-card">
+            <span class="report-stat-card__icon">⬆</span>
+            <div>
+              <p>Видано допомоги</p>
+              <strong>{{ report()!.totals.issued }}</strong>
+            </div>
+          </article>
+
+          <article class="report-stat-card">
+            <span class="report-stat-card__icon">📦</span>
+            <div>
+              <p>Залишок допомоги</p>
+              <strong>{{ report()!.totals.remaining }}</strong>
+            </div>
+          </article>
+        </div>
+
+        @if (report()!.categories.length) {
+          <div class="report-table-wrapper">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Категорія</th>
+                  <th>Надійшло</th>
+                  <th>Видано</th>
+                  <th>Залишок</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for (row of report()!.categories; track row.categoryId) {
+                  <tr>
+                    <td>{{ row.categoryName }}</td>
+                    <td>{{ row.received }}</td>
+                    <td>{{ row.issued }}</td>
+                    <td>{{ row.remaining }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="reports-card__empty">
+            <h3>Дані за обраний період відсутні</h3>
+            <p>Спробуйте обрати інший період для формування звіту.</p>
+          </div>
+        }
+      </section>
+    } @else if (!isLoading() && !errorMessage()) {
+      <div class="reports-card__empty">
+        <h3>Звіт ще не сформовано</h3>
+        <p>Оберіть період і натисніть “Згенерувати звіт”.</p>
+      </div>
+    }
+  </div>
+</section>

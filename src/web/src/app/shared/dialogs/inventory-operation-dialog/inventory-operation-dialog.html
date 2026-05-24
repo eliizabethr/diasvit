@@ -1,0 +1,98 @@
+<div class="operation-dialog">
+  <button
+    type="button"
+    class="operation-dialog__close"
+    aria-label="Закрити"
+    (click)="close()"
+  >
+    ×
+  </button>
+
+  <h2 class="operation-dialog__title">Оновити кількість товару</h2>
+
+  <p class="operation-dialog__subtitle">
+    Оберіть товар і вкажіть операцію, яка змінює залишок на складі.
+  </p>
+
+  <form class="operation-dialog__form" [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Товар</mat-label>
+      <mat-select formControlName="itemId">
+        @for (item of items(); track item.id) {
+          <mat-option [value]="item.id">
+            {{ item.name }} — {{ item.currentStock }} {{ item.unit }} / {{ item.category.name }}
+          </mat-option>
+        }
+      </mat-select>
+
+      @if (form.controls.itemId.invalid && form.controls.itemId.touched) {
+        <mat-error>Оберіть товар</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="operation-dialog__grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Тип операції</mat-label>
+        <mat-select formControlName="type">
+          @for (type of operationTypes; track type.value) {
+            <mat-option [value]="type.value">
+              {{ type.label }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Кількість</mat-label>
+        <input matInput type="number" min="1" formControlName="quantity" />
+
+        @if (form.controls.quantity.invalid && form.controls.quantity.touched) {
+          <mat-error>Введіть кількість більше 0</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Коментар</mat-label>
+      <textarea
+        matInput
+        rows="4"
+        formControlName="comment"
+        placeholder="Наприклад: поставка від партнера, виправлення помилки обліку..."
+      ></textarea>
+
+      @if (form.controls.comment.hasError('required') && form.controls.comment.touched) {
+        <mat-error>Коментар обов’язковий</mat-error>
+      }
+
+      @if (form.controls.comment.hasError('minlength') && form.controls.comment.touched) {
+        <mat-error>Мінімум 3 символи</mat-error>
+      }
+    </mat-form-field>
+
+    <p class="operation-dialog__hint">
+      Для нової поставки оберіть “Нова поставка”. Для виправлення помилок обліку використовуйте
+      коригування збільшення або зменшення.
+    </p>
+
+    @if (errorMessage()) {
+      <p class="operation-dialog__error">
+        {{ errorMessage() }}
+      </p>
+    }
+
+    <div class="operation-dialog__actions">
+      <button type="button" mat-stroked-button (click)="close()" [disabled]="isSubmitting()">
+        Скасувати
+      </button>
+
+      <button type="submit" mat-flat-button class="operation-dialog__primary" [disabled]="isSubmitting()">
+        @if (isSubmitting()) {
+          Збереження...
+        } @else {
+          Зберегти операцію
+        }
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,40 @@
+<div class="category-dialog">
+  <button type="button" class="category-dialog__close" aria-label="Закрити" (click)="close()">
+    ×
+  </button>
+
+  <h2 class="category-dialog__title">Додати категорію</h2>
+
+  <form class="category-dialog__form" [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Назва категорії</mat-label>
+      <input matInput formControlName="name" placeholder="Наприклад: Інсуліни" />
+
+      @if (form.controls.name.hasError('required') && form.controls.name.touched) {
+        <mat-error>Введіть назву категорії</mat-error>
+      }
+
+      @if (form.controls.name.hasError('minlength') && form.controls.name.touched) {
+        <mat-error>Мінімум 2 символи</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMessage()) {
+      <p class="category-dialog__error">{{ errorMessage() }}</p>
+    }
+
+    <div class="category-dialog__actions">
+      <button type="button" mat-stroked-button (click)="close()" [disabled]="isSubmitting()">
+        Скасувати
+      </button>
+
+      <button type="submit" mat-flat-button class="category-dialog__primary" [disabled]="isSubmitting()">
+        @if (isSubmitting()) {
+          Додавання...
+        } @else {
+          Додати
+        }
+      </button>
+    </div>
+  </form>
+</div>

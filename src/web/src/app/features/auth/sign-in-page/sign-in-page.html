@@ -1,0 +1,83 @@
+<app-auth-layout
+  title="Вхід у систему"
+  subtitle="Увійдіть за номером телефону, щоб переглядати свої заявки."
+  footerText="Ще не маєте облікового запису?"
+  footerLinkText="Зареєструватися"
+  footerLink="/auth/register"
+>
+  <form class="sign-in-form" [formGroup]="form" (ngSubmit)="signIn()">
+    <mat-form-field appearance="outline" class="sign-in-form__field">
+      <mat-label>Номер телефону</mat-label>
+      <input
+        matInput
+        type="tel"
+        formControlName="phone"
+        placeholder="+380XXXXXXXXX"
+        autocomplete="tel"
+      />
+
+      @if (form.controls.phone.hasError('required') && form.controls.phone.touched) {
+        <mat-error>Введіть номер телефону</mat-error>
+      }
+
+      @if (form.controls.phone.hasError('pattern') && form.controls.phone.touched) {
+        <mat-error>Введіть номер у форматі +380XXXXXXXXX</mat-error>
+      }
+    </mat-form-field>
+
+    <button
+      type="button"
+      mat-stroked-button
+      class="sign-in-form__code-button"
+      [disabled]="isRequestingCode() || (codeRequested() && !canResendCode())"
+      (click)="requestCode()"
+    >
+      @if (isRequestingCode()) {
+        <mat-spinner diameter="18"></mat-spinner>
+      } @else if (!codeRequested()) {
+        Отримати код
+      } @else if (resendSecondsLeft() > 0) {
+        Надіслати ще раз через {{ resendSecondsLeft() }} с
+      } @else {
+        Надіслати код ще раз
+      }
+    </button>
+
+    @if (codeRequested()) {
+      <div class="sign-in-form__otp">
+        <label class="sign-in-form__label">Код із SMS</label>
+
+        <app-otp-code-input formControlName="code"></app-otp-code-input>
+
+        @if (form.controls.code.invalid && form.controls.code.touched) {
+          <p class="sign-in-form__error">Введіть 6-значний код підтвердження</p>
+        }
+      </div>
+    }
+
+    @if (codeMessage()) {
+      <p class="sign-in-form__message">
+        {{ codeMessage() }}
+      </p>
+    }
+
+    @if (errorMessage()) {
+      <p class="sign-in-form__error">
+        {{ errorMessage() }}
+      </p>
+    }
+
+    <button
+      type="submit"
+      mat-flat-button
+      class="sign-in-form__submit"
+      [disabled]="!codeRequested() || isSigningIn()"
+    >
+      @if (isSigningIn()) {
+        <mat-spinner diameter="20"></mat-spinner>
+      } @else {
+        Увійти
+      }
+    </button>
+  </form>
+</app-auth-layout>

@@ -1,0 +1,144 @@
+<div class="profile-page">
+  <header class="profile-header">
+    <a class="profile-header__logo" routerLink="/">
+      <span class="profile-header__logo-mark">Д</span>
+      <span class="profile-header__logo-text">Діасвіт Запоріжжя</span>
+    </a>
+
+    <nav class="profile-header__nav">
+      <a routerLink="/">Головна</a>
+      <a routerLink="/">Про нас</a>
+      <a routerLink="/">Галерея</a>
+      <a routerLink="/">Отримати допомогу</a>
+      <a routerLink="/">Контакти</a>
+    </nav>
+
+    <div class="profile-header__actions">
+      @if (isAdmin()) {
+      <a class="profile-header__button profile-header__button--outline" routerLink="/admin">
+        Адміністрування
+      </a>
+      }
+
+      <a class="profile-header__button profile-header__button--primary" routerLink="/profile">
+        Мій кабінет
+      </a>
+
+      <button type="button" class="profile-header__logout" (click)="logout()">
+        Вийти
+      </button>
+    </div>
+  </header>
+
+  <main class="profile-page__content">
+    <section class="profile-page__intro">
+      <div>
+        <h1>Особистий кабінет</h1>
+        <p>Тут Ви можете переглядати свої заявки та їх статус</p>
+      </div>
+
+      <div class="profile-page__notice">
+        <span class="profile-page__notice-icon">i</span>
+        <span>Статус заявок оновлюється після розгляду</span>
+      </div>
+    </section>
+
+    @if (errorMessage()) {
+    <p class="profile-page__error">
+      {{ errorMessage() }}
+    </p>
+    }
+
+    <section class="profile-page__grid">
+      <aside class="profile-card">
+        <h2>Мої дані</h2>
+
+        @if (isLoadingUser()) {
+        <p class="profile-card__muted">Завантаження даних...</p>
+        } @else if (currentUser()) {
+        <div class="profile-card__list">
+          <div class="profile-card__item">
+            <span class="profile-card__icon">👤</span>
+            <span>{{ fullName() }}</span>
+          </div>
+
+          <div class="profile-card__item">
+            <span class="profile-card__icon">☎</span>
+            <span>{{ currentUser()!.phone }}</span>
+          </div>
+
+          <div class="profile-card__item">
+            <span class="profile-card__icon">📅</span>
+            <span>{{ formatDate(currentUser()!.dateOfBirth) }}</span>
+          </div>
+        </div>
+        }
+      </aside>
+
+      <section class="applications-card">
+        <div class="applications-card__header">
+          <h2>Мої заявки</h2>
+
+          <button type="button" mat-flat-button class="applications-card__new-button" (click)="goToCreateApplication()">
+            Подати нову заявку
+          </button>
+        </div>
+
+        @if (isLoadingApplications()) {
+        <p class="applications-card__muted">Завантаження заявок...</p>
+        } @else if (applicationsResponse()?.data?.length) {
+        <div class="applications-table-wrapper">
+          <table class="applications-table">
+            <thead>
+              <tr>
+                <th>Номер заявки</th>
+                <th>Дата подання</th>
+                <th>Товари</th>
+                <th>Отримання</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (application of applicationsResponse()!.data; track application.id) {
+              <tr>
+                <td>{{ formatApplicationNumber(application) }}</td>
+                <td>{{ formatDate(application.createdAt) }}</td>
+                <td>
+                  <div class="applications-table__items">
+                    <span>{{ formatApplicationItems(application) }}</span>
+
+                    @if (application.items.length > 0) {
+                    <button type="button" class="applications-table__link"
+                      (click)="openApplicationItemsDialog(application)">
+                      Переглянути список
+                    </button>
+                    }
+                  </div>
+                </td>
+                <td>{{ formatApplicationFulfillment(application) }}</td>
+                <td>
+                  <app-status-badge [status]="application.status"></app-status-badge>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <app-pagination [page]="applicationsResponse()!.page" [limit]="applicationsResponse()!.limit"
+          [total]="applicationsResponse()!.total" [totalPages]="applicationsResponse()!.totalPages"
+          (pageChange)="onPageChange($event)"></app-pagination>
+        } @else {
+        <div class="applications-card__empty">
+          <h3>У Вас ще немає заявок</h3>
+          <p>Подайте першу заявку, щоб відстежувати її статус у кабінеті.</p>
+          <button type="button" mat-flat-button (click)="goToCreateApplication()">
+            Подати заявку
+          </button>
+        </div>
+        }
+      </section>
+    </section>
+  </main>
+</div>

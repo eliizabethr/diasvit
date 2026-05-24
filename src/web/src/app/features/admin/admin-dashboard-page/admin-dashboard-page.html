@@ -1,0 +1,92 @@
+<section class="dashboard-page">
+  <div class="dashboard-page__heading">
+    <div>
+      <h2>Головна</h2>
+      <p>Короткий огляд користувачів, заявок і нових звернень</p>
+    </div>
+
+    <a mat-flat-button class="dashboard-page__primary-link" routerLink="/admin/applications">
+      Перейти до реєстру заяв
+    </a>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="dashboard-page__error">
+      {{ errorMessage() }}
+    </p>
+  }
+
+  @if (isLoading()) {
+    <p class="dashboard-page__muted">Завантаження статистики...</p>
+  } @else {
+    <div class="stats-grid">
+      <article class="stat-card">
+        <div class="stat-card__icon">👥</div>
+        <div>
+          <p class="stat-card__label">Користувачів</p>
+          <strong>{{ usersTotal() }}</strong>
+        </div>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-card__icon">📋</div>
+        <div>
+          <p class="stat-card__label">Усього заявок</p>
+          <strong>{{ applicationsTotal() }}</strong>
+        </div>
+      </article>
+
+      <article class="stat-card stat-card--accent">
+        <div class="stat-card__icon">🆕</div>
+        <div>
+          <p class="stat-card__label">Нових заявок</p>
+          <strong>{{ newApplicationsTotal() }}</strong>
+        </div>
+      </article>
+    </div>
+
+    <section class="recent-card">
+      <div class="recent-card__header">
+        <div>
+          <h3>Останні нові заявки</h3>
+          <p>Заявки, які ще очікують первинного розгляду</p>
+        </div>
+
+        <a routerLink="/admin/applications">Усі заявки →</a>
+      </div>
+
+      @if (hasRecentApplications()) {
+        <div class="recent-table-wrapper">
+          <table class="recent-table">
+            <thead>
+              <tr>
+                <th>Номер заявки</th>
+                <th>ПІБ заявника</th>
+                <th>Дата подання</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (application of recentNewApplications(); track application.id) {
+                <tr>
+                  <td>{{ formatApplicationNumber(application) }}</td>
+                  <td>{{ formatUserFullName(application) }}</td>
+                  <td>{{ formatDate(application.createdAt) }}</td>
+                  <td>
+                    <app-status-badge [status]="application.status"></app-status-badge>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="recent-card__empty">
+          <h4>Нових заявок немає</h4>
+          <p>Коли користувачі подадуть нові заявки, вони з’являться тут.</p>
+        </div>
+      }
+    </section>
+  }
+</section>

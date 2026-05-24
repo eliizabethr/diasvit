@@ -1,0 +1,46 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.status-badge--new {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.status-badge--in-review,
+.status-badge--preparing {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.status-badge--approved,
+.status-badge--ready-for-delivery,
+.status-badge--ready-for-pickup {
+  color: #0369a1;
+  background: #e0f2fe;
+}
+
+.status-badge--shipped {
+  color: #6d28d9;
+  background: #ede9fe;
+}
+
+.status-badge--completed {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.status-badge--rejected,
+.status-badge--cancelled {
+  color: #b91c1c;
+  background: #fee2e2;
+}
