@@ -20,11 +20,16 @@ import { SignInResponseDto } from './dto/sign-in-response.dto';
 import { RequestCodeRequestDto } from './dto/request-code-request.dto';
 import { VerifyCodeRequestDto } from './dto/verify-code-request.dto';
 import { VerifyCodeResponseDto } from './dto/verify-code-response.dto';
-import { ApiAcceptedResponse, ApiHeader, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiAcceptedResponse,
+  ApiHeader,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ summary: 'Sign into the system using a one-time token.' })
   @ApiHeader({

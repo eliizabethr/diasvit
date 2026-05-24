@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+      - 'release/**'
+
+  push:
+    branches:
+      - develop
+      - main
+      - 'release/**'
+      - 'feature/**'
+      - 'fix/**'
+      - 'hotfix/**'
+
+jobs:
+  api-ci:
+    name: API CI
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: src/api
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/api/package-lock.json
+
+      - name: Install backend dependencies
+        run: npm ci
+
+      - name: Run backend lint
+        run: echo "No lint yet"
+
+      - name: Run backend tests
+        run: npm run test
+
+      - name: Build backend
+        run: npm run build
+
+  web-ci:
+    name: Web CI
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: src/web
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Run frontend lint
+        run: echo "No lint yet"
+
+      - name: Run frontend tests
+        run: echo "No tests yet"
+        # run: npm run test -- --watch=false --browsers=ChromeHeadless
+
+      - name: Build frontend
+        run: npm run build

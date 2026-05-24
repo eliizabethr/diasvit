@@ -1,4 +1,11 @@
-import { Controller, Get, UseGuards, Request, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Request,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { UsersService } from '../users.service';
 import { UserUserResponseDto } from '../dto/user/user-user-response.dto';
 import { AuthGuard } from '../../auth/auth.guard';
@@ -6,7 +13,7 @@ import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 
 @Controller('me')
 export class UsersUserController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({ summary: 'Get the current user' })
   @ApiOkResponse({ type: UserUserResponseDto })

@@ -82,7 +82,7 @@ export class ApplicationsService {
             application: true,
             item: {
               category: true,
-            }
+            },
           },
           user: {
             applications: true,
