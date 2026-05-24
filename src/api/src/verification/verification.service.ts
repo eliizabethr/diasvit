@@ -4,18 +4,24 @@ import { VerificationTicket } from './entities/verification-ticket.entity';
 import { IsNull, MoreThan, Repository } from 'typeorm';
 import { TwilioService } from 'nestjs-twilio';
 import { createHash, randomBytes } from 'crypto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class VerificationService {
+  private readonly verifyServiceSid: string;
+
   constructor(
+    configService: ConfigService,
     private readonly twilioService: TwilioService,
     @InjectRepository(VerificationTicket)
     private readonly verificationTicketsRepository: Repository<VerificationTicket>,
-  ) {}
+  ) {
+    this.verifyServiceSid = configService.getOrThrow<string>('TWILIO_VERIFY_SERVICE_SID');
+  }
 
   async requestCode(phone: string) {
     const verification = await this.twilioService.client.verify.v2
-      .services('***REMOVED***')
+      .services(this.verifyServiceSid)
       .verifications.create({
         to: '+' + this.normalizePhone(phone),
         channel: 'sms',
@@ -28,7 +34,7 @@ export class VerificationService {
 
   async verifyCode(phone: string, code: string) {
     const verificationCheck = await this.twilioService.client.verify.v2
-      .services('***REMOVED***')
+      .services(this.verifyServiceSid)
       .verificationChecks.create({
         to: '+' + this.normalizePhone(phone),
         code: code,
