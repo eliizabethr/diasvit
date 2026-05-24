@@ -1,0 +1,60 @@
+.sign-in-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sign-in-form__field {
+  width: 100%;
+}
+
+.sign-in-form__code-button,
+.sign-in-form__submit {
+  width: 100%;
+  min-height: 46px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.sign-in-form__submit {
+  margin-top: 4px;
+}
+
+.sign-in-form__otp {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sign-in-form__label {
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sign-in-form__message {
+  margin: -4px 0 0;
+  color: #047857;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.sign-in-form__error {
+  margin: -4px 0 0;
+  color: #b91c1c;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+:host ::ng-deep .sign-in-form__code-button .mdc-button__label,
+:host ::ng-deep .sign-in-form__submit .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+:host ::ng-deep .sign-in-form__submit {
+  --mdc-filled-button-container-color: #2563eb;
+  --mdc-filled-button-label-text-color: #ffffff;
+}

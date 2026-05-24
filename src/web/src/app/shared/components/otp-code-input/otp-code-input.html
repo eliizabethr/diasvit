@@ -1,0 +1,18 @@
+<div class="otp-code" role="group" aria-label="Код підтвердження">
+  @for (digit of digits; track $index) {
+    <input
+      #codeInput
+      class="otp-code__input"
+      type="text"
+      inputmode="numeric"
+      autocomplete="one-time-code"
+      maxlength="1"
+      [value]="digit"
+      [disabled]="isInputDisabled()"
+      (input)="onInput($event, $index)"
+      (keydown)="onKeyDown($event, $index)"
+      (paste)="onPaste($event, $index)"
+      (blur)="onBlur()"
+    />
+  }
+</div>

@@ -1,0 +1,40 @@
+<div class="items-dialog">
+  <button
+    type="button"
+    class="items-dialog__close"
+    aria-label="Закрити"
+    (click)="close()"
+  >
+    ×
+  </button>
+
+  <h2 class="items-dialog__title">
+    Список товарів у заявці {{ applicationNumber() }}
+  </h2>
+
+  <div class="items-dialog__table-wrapper">
+    <table class="items-dialog__table">
+      <thead>
+        <tr>
+          <th>Назва</th>
+          <th>Кількість</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (applicationItem of items(); track applicationItem.id) {
+          <tr>
+            <td>{{ applicationItem.item.name }}</td>
+            <td>{{ applicationItem.quantity }} {{ applicationItem.item.unit }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="items-dialog__actions">
+    <button type="button" mat-flat-button class="items-dialog__primary" (click)="close()">
+      Закрити
+    </button>
+  </div>
+</div>

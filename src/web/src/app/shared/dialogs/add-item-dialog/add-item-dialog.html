@@ -1,0 +1,90 @@
+<div class="item-dialog">
+  <button type="button" class="item-dialog__close" aria-label="Закрити" (click)="close()">
+    ×
+  </button>
+
+  <h2 class="item-dialog__title">Додати новий товар</h2>
+
+  <form class="item-dialog__form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="item-dialog__category-row">
+      <mat-form-field appearance="outline" class="item-dialog__category">
+        <mat-label>Категорія</mat-label>
+        <mat-select formControlName="categoryId">
+          @for (category of categories(); track category.id) {
+            <mat-option [value]="category.id">{{ category.name }}</mat-option>
+          }
+        </mat-select>
+
+        @if (form.controls.categoryId.invalid && form.controls.categoryId.touched) {
+          <mat-error>Оберіть категорію</mat-error>
+        }
+      </mat-form-field>
+
+      <button
+        type="button"
+        mat-stroked-button
+        class="item-dialog__add-category"
+        (click)="openAddCategoryDialog()"
+      >
+        +
+      </button>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Назва товару</mat-label>
+      <input matInput formControlName="name" placeholder="Наприклад: Лантус" />
+
+      @if (form.controls.name.hasError('required') && form.controls.name.touched) {
+        <mat-error>Введіть назву товару</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="item-dialog__grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Одиниця виміру</mat-label>
+        <mat-select formControlName="unit">
+          @for (unit of units; track unit) {
+            <mat-option [value]="unit">{{ unit }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Початкова кількість</mat-label>
+        <input matInput type="number" min="1" formControlName="initialQuantity" />
+
+        @if (form.controls.initialQuantity.invalid && form.controls.initialQuantity.touched) {
+          <mat-error>Введіть початкову кількість</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Коментар</mat-label>
+      <textarea
+        matInput
+        rows="3"
+        formControlName="comment"
+        placeholder="Наприклад: початкове надходження товару"
+      ></textarea>
+    </mat-form-field>
+
+    @if (errorMessage()) {
+      <p class="item-dialog__error">{{ errorMessage() }}</p>
+    }
+
+    <div class="item-dialog__actions">
+      <button type="button" mat-stroked-button (click)="close()" [disabled]="isSubmitting()">
+        Скасувати
+      </button>
+
+      <button type="submit" mat-flat-button class="item-dialog__primary" [disabled]="isSubmitting()">
+        @if (isSubmitting()) {
+          Додавання...
+        } @else {
+          Додати товар
+        }
+      </button>
+    </div>
+  </form>
+</div>

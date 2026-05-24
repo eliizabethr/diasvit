@@ -1,0 +1,22 @@
+<div class="comment-dialog">
+  <button
+    type="button"
+    class="comment-dialog__close"
+    aria-label="Закрити"
+    (click)="close()"
+  >
+    ×
+  </button>
+
+  <h2 class="comment-dialog__title">{{ data.title }}</h2>
+
+  <div class="comment-dialog__body">
+    <p>{{ data.comment }}</p>
+  </div>
+
+  <div class="comment-dialog__actions">
+    <button type="button" mat-flat-button class="comment-dialog__primary" (click)="close()">
+      Закрити
+    </button>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+<div class="pagination">
+  <p class="pagination__range">
+    {{ rangeText() }}
+  </p>
+
+  @if (totalPages() > 1) {
+    <nav class="pagination__nav" aria-label="Пагінація">
+      <button
+        type="button"
+        class="pagination__button pagination__button--wide"
+        [disabled]="page() === 1"
+        (click)="goToPage(page() - 1)"
+      >
+        Назад
+      </button>
+
+      @for (pageNumber of pages(); track pageNumber) {
+        <button
+          type="button"
+          class="pagination__button"
+          [class.pagination__button--active]="pageNumber === page()"
+          (click)="goToPage(pageNumber)"
+        >
+          {{ pageNumber }}
+        </button>
+
+        @if (shouldShowEllipsisAfter(pageNumber)) {
+          <span class="pagination__ellipsis">...</span>
+        }
+      }
+
+      <button
+        type="button"
+        class="pagination__button pagination__button--wide"
+        [disabled]="page() === totalPages()"
+        (click)="goToPage(page() + 1)"
+      >
+        Вперед
+      </button>
+    </nav>
+  }
+</div>

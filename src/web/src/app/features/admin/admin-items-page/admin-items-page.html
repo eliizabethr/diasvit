@@ -1,0 +1,94 @@
+<section class="items-page">
+  <div class="items-page__heading">
+    <div>
+      <h2>Облік допомоги</h2>
+      <p>Перегляд товарів, залишків і додавання нових надходжень</p>
+    </div>
+
+    <div class="items-page__actions">
+      <button type="button" mat-stroked-button class="items-page__secondary" (click)="openInventoryOperationDialog()">
+        Оновити кількість товару
+      </button>
+
+      <button type="button" mat-flat-button class="items-page__primary" (click)="openAddItemDialog()">
+        Додати новий товар
+      </button>
+    </div>
+  </div>
+
+  <div class="items-card">
+    <div class="items-card__toolbar">
+      <mat-form-field appearance="outline" class="items-card__search">
+        <mat-label>Пошук</mat-label>
+        <input matInput [formControl]="searchControl" placeholder="Пошук за назвою товару" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="items-card__categories">
+        <mat-label>Категорії</mat-label>
+        <mat-select [formControl]="categoryIdsControl" multiple>
+          @for (category of categories(); track category.id) {
+          <mat-option [value]="category.id">{{ category.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button type="button" class="items-card__reset" (click)="resetFilters()">
+        Скинути фільтр
+      </button>
+    </div>
+
+    @if (errorMessage()) {
+    <p class="items-card__error">
+      {{ errorMessage() }}
+    </p>
+    }
+
+    @if (isLoading()) {
+    <p class="items-card__muted">Завантаження товарів...</p>
+    } @else if (itemsResponse()?.data?.length) {
+    <div class="items-table-wrapper">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Назва товару</th>
+            <th>Категорія</th>
+            <th>Кількість</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (item of itemsResponse()!.data; track item.id) {
+          <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.category.name }}</td>
+            <td>{{ item.currentStock }} {{ item.unit }}</td>
+            <td class="items-table__actions">
+              <button type="button" class="items-table__edit" aria-label="Редагувати товар"
+                (click)="openUpdateItemDialog(item)">
+                ✎
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination [page]="itemsResponse()!.page" [limit]="itemsResponse()!.limit" [total]="itemsResponse()!.total"
+      [totalPages]="itemsResponse()!.totalPages" (pageChange)="onPageChange($event)"></app-pagination>
+    } @else {
+    <div class="items-card__empty">
+      <h3>Товарів не знайдено</h3>
+
+      @if (searchControl.value || categoryIdsControl.value.length) {
+      <p>За обраними фільтрами немає результатів.</p>
+      } @else {
+      <p>У системі поки немає товарів для обліку.</p>
+      }
+    </div>
+    }
+  </div>
+</section>

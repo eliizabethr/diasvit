@@ -1,0 +1,82 @@
+<section class="users-page">
+  <div class="users-page__heading">
+    <div>
+      <h2>Реєстр користувачів</h2>
+      <p>Перегляд користувачів, які зареєстровані в системі фонду</p>
+    </div>
+
+    <div class="users-page__total">
+      Усього користувачів:
+      <strong>{{ usersResponse()?.total ?? 0 }}</strong>
+    </div>
+  </div>
+
+  <div class="users-card">
+    <div class="users-card__toolbar">
+      <mat-form-field appearance="outline" class="users-card__search">
+        <mat-label>Пошук</mat-label>
+        <input
+          matInput
+          [formControl]="searchControl"
+          placeholder="Пошук за ПІБ або номером телефону"
+        />
+      </mat-form-field>
+    </div>
+
+    @if (errorMessage()) {
+      <p class="users-card__error">
+        {{ errorMessage() }}
+      </p>
+    }
+
+    @if (isLoading()) {
+      <p class="users-card__muted">Завантаження користувачів...</p>
+    } @else if (usersResponse()?.data?.length) {
+      <div class="users-table-wrapper">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>ПІБ</th>
+              <th>Номер телефону</th>
+              <th>Дата народження</th>
+              <th>Вік</th>
+              <th>Кількість заяв</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (user of usersResponse()!.data; track user.id) {
+              <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ formatUserFullName(user) }}</td>
+                <td>{{ formatPhone(user.phone) }}</td>
+                <td>{{ formatDate(user.dateOfBirth) }}</td>
+                <td>{{ calculateAge(user.dateOfBirth) }}</td>
+                <td>{{ user.applicationsCount }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <app-pagination
+        [page]="usersResponse()!.page"
+        [limit]="usersResponse()!.limit"
+        [total]="usersResponse()!.total"
+        [totalPages]="usersResponse()!.totalPages"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
+    } @else {
+      <div class="users-card__empty">
+        <h3>Користувачів не знайдено</h3>
+
+        @if (searchControl.value) {
+          <p>За Вашим пошуковим запитом немає результатів.</p>
+        } @else {
+          <p>У системі поки немає зареєстрованих користувачів.</p>
+        }
+      </div>
+    }
+  </div>
+</section>

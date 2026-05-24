@@ -1,0 +1,64 @@
+<div class="sms-dialog">
+  <button type="button" class="sms-dialog__close" aria-label="Закрити" (click)="close()">
+    ×
+  </button>
+
+  <h2 class="sms-dialog__title">
+    {{ data.title || 'Підтвердження номера телефону' }}
+  </h2>
+
+  <p class="sms-dialog__subtitle">
+    {{ data.subtitle || 'Введіть код підтвердження, який було надіслано на номер:' }}
+  </p>
+
+  <p class="sms-dialog__phone">
+    {{ data.phone }}
+  </p>
+
+  <form class="sms-dialog__form" [formGroup]="form" (ngSubmit)="verifyCode()">
+    <app-otp-code-input formControlName="code"></app-otp-code-input>
+
+    @if (form.controls.code.invalid && form.controls.code.touched) {
+      <p class="sms-dialog__error">Введіть 6-значний код підтвердження</p>
+    }
+
+    @if (infoMessage()) {
+      <p class="sms-dialog__message">{{ infoMessage() }}</p>
+    }
+
+    @if (errorMessage()) {
+      <p class="sms-dialog__error">{{ errorMessage() }}</p>
+    }
+
+    <div class="sms-dialog__actions">
+      <button
+        type="button"
+        mat-stroked-button
+        class="sms-dialog__secondary"
+        [disabled]="resendSecondsLeft() > 0 || isResending()"
+        (click)="resendCode()"
+      >
+        @if (isResending()) {
+          <mat-spinner diameter="18"></mat-spinner>
+        } @else if (resendSecondsLeft() > 0) {
+          Надіслати ще раз через {{ resendSecondsLeft() }} с
+        } @else {
+          Надіслати код ще раз
+        }
+      </button>
+
+      <button
+        type="submit"
+        mat-flat-button
+        class="sms-dialog__primary"
+        [disabled]="isVerifying()"
+      >
+        @if (isVerifying()) {
+          <mat-spinner diameter="18"></mat-spinner>
+        } @else {
+          Підтвердити
+        }
+      </button>
+    </div>
+  </form>
+</div>

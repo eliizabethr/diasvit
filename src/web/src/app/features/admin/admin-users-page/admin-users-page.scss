@@ -1,0 +1,136 @@
+.users-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.users-page__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.users-page__heading h2 {
+  margin: 0;
+  color: #0d6efd;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.users-page__heading p {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 16px;
+}
+
+.users-page__total {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 18px;
+  border: 1px solid #d7e1f0;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.users-page__total strong {
+  color: #0d6efd;
+  font-size: 20px;
+}
+
+.users-card {
+  padding: 26px;
+  border: 1px solid #d7e1f0;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.users-card__toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.users-card__search {
+  width: min(100%, 420px);
+}
+
+.users-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.users-table th {
+  padding: 16px 0;
+  color: #1f2f5f;
+  font-weight: 700;
+  text-align: left;
+  border-bottom: 1px solid #d7e1f0;
+  white-space: nowrap;
+}
+
+.users-table td {
+  padding: 16px 0;
+  color: #1f2f5f;
+  border-bottom: 1px solid #e5ebf5;
+  vertical-align: middle;
+}
+
+.users-table tr:last-child td {
+  border-bottom: none;
+}
+
+.users-card__muted {
+  margin: 0;
+  color: #64748b;
+}
+
+.users-card__error {
+  margin: 0 0 18px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.users-card__empty {
+  padding: 52px 16px 32px;
+  text-align: center;
+}
+
+.users-card__empty h3 {
+  margin: 0;
+  color: #1f2f5f;
+  font-size: 22px;
+}
+
+.users-card__empty p {
+  margin: 10px 0 0;
+  color: #64748b;
+}
+
+@media (max-width: 900px) {
+  .users-page__heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .users-card {
+    padding: 20px;
+  }
+
+  .users-card__search {
+    width: 100%;
+  }
+}

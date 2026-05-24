@@ -1,0 +1,116 @@
+.sms-dialog {
+  position: relative;
+  width: min(100%, 560px);
+  padding: 32px 36px 30px;
+  color: #1f2f5f;
+}
+
+.sms-dialog__close {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  color: #1f2f5f;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.sms-dialog__close:hover {
+  background: #eef4ff;
+}
+
+.sms-dialog__title {
+  margin: 0 42px 12px 0;
+  color: #0d6efd;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.sms-dialog__subtitle {
+  margin: 0;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.sms-dialog__phone {
+  margin: 8px 0 24px;
+  color: #1f2f5f;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.sms-dialog__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sms-dialog__message {
+  margin: 0;
+  color: #047857;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.sms-dialog__error {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.sms-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.sms-dialog__secondary,
+.sms-dialog__primary {
+  min-height: 44px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.sms-dialog__secondary {
+  min-width: 210px;
+}
+
+.sms-dialog__primary {
+  min-width: 150px;
+}
+
+:host ::ng-deep .sms-dialog__primary {
+  --mdc-filled-button-container-color: #0d6efd;
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+:host ::ng-deep .sms-dialog__secondary .mdc-button__label,
+:host ::ng-deep .sms-dialog__primary .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+@media (max-width: 560px) {
+  .sms-dialog {
+    padding: 28px 22px;
+  }
+
+  .sms-dialog__actions {
+    flex-direction: column;
+  }
+
+  .sms-dialog__secondary,
+  .sms-dialog__primary {
+    width: 100%;
+  }
+}

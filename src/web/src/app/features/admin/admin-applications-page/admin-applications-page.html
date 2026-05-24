@@ -1,0 +1,153 @@
+<section class="applications-page">
+    <div class="applications-page__heading">
+        <div>
+            <h2>Реєстр заяв на допомогу</h2>
+            <p>Перегляд, пошук і зміна статусів заявок користувачів</p>
+        </div>
+
+        <div class="applications-page__total">
+            Усього заяв:
+            <strong>{{ applicationsResponse()?.total ?? 0 }}</strong>
+        </div>
+    </div>
+
+    <div class="applications-card">
+        <div class="applications-card__toolbar">
+            <mat-form-field appearance="outline" class="applications-card__search">
+                <mat-label>Пошук</mat-label>
+                <input matInput [formControl]="searchControl" placeholder="Пошук за ПІБ або номером телефону" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="applications-card__categories">
+                <mat-label>Категорії</mat-label>
+                <mat-select [formControl]="categoryIdsControl" multiple>
+                    @for (category of categories(); track category.id) {
+                    <mat-option [value]="category.id">
+                        {{ category.name }}
+                    </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="applications-card__fulfillment">
+                <mat-label>Отримання</mat-label>
+                <mat-select [formControl]="fulfillmentTypeControl">
+                    <mat-option value="">Усі способи</mat-option>
+                    <mat-option value="pickup">Самовивіз</mat-option>
+                    <mat-option value="delivery">Доставка</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="applications-card__status">
+                <mat-label>Статус</mat-label>
+                <mat-select [formControl]="statusControl">
+                    <mat-option value="">Усі статуси</mat-option>
+
+                    @for (status of statuses; track status.value) {
+                    <mat-option [value]="status.value">
+                        {{ status.label }}
+                    </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <button type="button" class="applications-card__reset" (click)="resetFilters()">
+                Скинути фільтр
+            </button>
+        </div>
+
+        @if (errorMessage()) {
+        <p class="applications-card__error">
+            {{ errorMessage() }}
+        </p>
+        }
+
+        @if (isLoading()) {
+        <p class="applications-card__muted">Завантаження заявок...</p>
+        } @else if (applicationsResponse()?.data?.length) {
+        <div class="applications-table-wrapper">
+            <table class="applications-table">
+                <thead>
+                    <tr>
+                        <th>Номер заяви</th>
+                        <th>Дата подання</th>
+                        <th>ПІБ</th>
+                        <th>Телефон</th>
+                        <th>Товари</th>
+                        <th>Отримання</th>
+                        <th>Статус</th>
+                        <th>Коментар</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @for (application of applicationsResponse()!.data; track application.id) {
+                    <tr>
+                        <td>{{ formatApplicationNumber(application) }}</td>
+                        <td>{{ formatDate(application.createdAt) }}</td>
+                        <td>{{ formatUserFullName(application) }}</td>
+                        <td>{{ application.user.phone }}</td>
+
+                        <td>
+                            <div class="applications-table__items">
+                                <span>{{ formatApplicationItems(application) }}</span>
+
+                                @if (application.items.length > 0) {
+                                <button type="button" class="applications-table__link"
+                                    (click)="openItemsDialog(application)">
+                                    Переглянути список
+                                </button>
+                                }
+                            </div>
+                        </td>
+
+                        <td>{{ formatApplicationFulfillment(application) }}</td>
+
+                        <td>
+                            <mat-form-field appearance="outline" class="applications-table__status-select">
+                                <mat-select [value]="application.status"
+                                    (selectionChange)="updateStatus(application, $event.value)">
+                                    @for (status of statuses; track status.value) {
+                                    <mat-option
+                                      [value]="status.value"
+                                      [disabled]="!canSelectStatus(application, status.value)"
+                                    >
+                                      {{ status.label }}
+                                    </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+
+                        <td>
+                            @if (application.comment) {
+                            <button type="button" class="applications-table__link"
+                                (click)="openCommentDialog(application)">
+                                Переглянути
+                            </button>
+                            } @else {
+                            <span class="applications-table__muted">Немає</span>
+                            }
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <app-pagination [page]="applicationsResponse()!.page" [limit]="applicationsResponse()!.limit"
+            [total]="applicationsResponse()!.total" [totalPages]="applicationsResponse()!.totalPages"
+            (pageChange)="onPageChange($event)"></app-pagination>
+        } @else {
+        <div class="applications-card__empty">
+            <h3>Заявок не знайдено</h3>
+
+            @if (searchControl.value || statusControl.value) {
+            <p>За обраними фільтрами немає результатів.</p>
+            } @else {
+            <p>У системі поки немає заявок на допомогу.</p>
+            }
+        </div>
+        }
+    </div>
+</section>

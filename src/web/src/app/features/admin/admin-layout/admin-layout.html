@@ -1,0 +1,71 @@
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <a class="admin-sidebar__logo" routerLink="/">
+      <span class="admin-sidebar__logo-mark">Д</span>
+      <span class="admin-sidebar__logo-text">Діасвіт Запоріжжя</span>
+    </a>
+
+    <nav class="admin-sidebar__nav">
+      <a routerLink="/admin" routerLinkActive="admin-sidebar__link--active" [routerLinkActiveOptions]="{ exact: true }"
+        class="admin-sidebar__link">
+        <span>🏠</span>
+        Головна
+      </a>
+
+      <a routerLink="/admin/users" routerLinkActive="admin-sidebar__link--active" class="admin-sidebar__link">
+        <span>👥</span>
+        Реєстр користувачів
+      </a>
+
+      <a routerLink="/admin/applications" routerLinkActive="admin-sidebar__link--active" class="admin-sidebar__link">
+        <span>📋</span>
+        Реєстр заяв на допомогу
+      </a>
+
+      <a routerLink="/admin/items" routerLinkActive="admin-sidebar__link--active" class="admin-sidebar__link">
+        <span>📦</span>
+        Облік допомоги
+      </a>
+
+      <a routerLink="/admin/reports" routerLinkActive="admin-sidebar__link--active" class="admin-sidebar__link">
+        <span>📊</span>
+        Звітність
+      </a>
+    </nav>
+
+    <button type="button" class="admin-sidebar__logout" (click)="logout()">
+      <span>↩</span>
+      Вийти
+    </button>
+  </aside>
+
+  <section class="admin-layout__main">
+    <header class="admin-header">
+      <div>
+        <p class="admin-header__eyebrow">Панель керування</p>
+        <h1>Адміністрування</h1>
+      </div>
+
+      <div class="admin-header__user">
+        <div class="admin-header__avatar">
+          {{ adminFullName().charAt(0) }}
+        </div>
+
+        <div>
+          <p class="admin-header__name">{{ adminFullName() }}</p>
+          <p class="admin-header__role">Адміністратор</p>
+        </div>
+      </div>
+    </header>
+
+    @if (errorMessage()) {
+    <p class="admin-layout__error">
+      {{ errorMessage() }}
+    </p>
+    }
+
+    <main class="admin-content">
+      <router-outlet></router-outlet>
+    </main>
+  </section>
+</div>
