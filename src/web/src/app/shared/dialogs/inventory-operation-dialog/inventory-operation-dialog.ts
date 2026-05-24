@@ -40,7 +40,7 @@ export class InventoryOperationDialog {
   readonly isSubmitting = signal(false);
   readonly errorMessage = signal('');
 
-  readonly operationTypes: Array<{ value: InventoryOperationType; label: string }> = [
+  readonly operationTypes: { value: InventoryOperationType; label: string }[] = [
     {
       value: 'income',
       label: 'Нова поставка',
