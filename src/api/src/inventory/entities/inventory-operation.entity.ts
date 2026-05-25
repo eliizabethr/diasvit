@@ -21,7 +21,10 @@ export enum InventoryOperationType {
 
 @Entity()
 @Index(['itemId', 'id'])
-@Index(['applicationItemId', 'type'], { unique: true })
+@Index(['applicationItemId', 'type'], {
+  unique: true,
+  where: '"applicationItemId" IS NOT NULL'
+})
 export class InventoryOperation {
   @PrimaryGeneratedColumn()
   id!: number;
