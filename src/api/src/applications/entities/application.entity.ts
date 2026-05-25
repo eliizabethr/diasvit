@@ -41,16 +41,16 @@ export class Application {
   )
   items!: ApplicationItem[];
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', length: 255, })
   fulfillmentType!: FulfillmentType;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   deliveryCity!: string | null;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   deliveryAddress!: string | null;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   pickupLocation!: string | null;
 
   @Column({ type: 'datetime', nullable: true })
@@ -62,11 +62,11 @@ export class Application {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   comment!: string | null;
 
   @Column({
-    type: 'varchar',
+    type: 'varchar', length: 255,
     default: ApplicationStatus.NEW,
   })
   currentStatus!: ApplicationStatus;

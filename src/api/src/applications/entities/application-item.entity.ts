@@ -15,12 +15,12 @@ export class ApplicationItem {
   id!: number;
 
   @ManyToOne(() => Application, (application) => application.items, {
-    onDelete: 'CASCADE',
+    onDelete: 'NO ACTION',
   })
   application!: Application;
 
   @ManyToOne(() => Item, (item) => item.applicationItems, {
-    onDelete: 'RESTRICT',
+    onDelete: 'NO ACTION',
   })
   item!: Item;
 
