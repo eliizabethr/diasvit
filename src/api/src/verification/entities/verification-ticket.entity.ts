@@ -11,7 +11,7 @@ export class VerificationTicket {
   id!: number;
 
   // TODO: use static length
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   tokenHash!: string | null;
 
   @Column()
@@ -20,10 +20,10 @@ export class VerificationTicket {
   @Column()
   purpose!: 'register' | 'sign_in';
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   userIp!: string | null;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   userAgent!: string | null;
 
   @Column()

@@ -21,7 +21,10 @@ export enum InventoryOperationType {
 
 @Entity()
 @Index(['itemId', 'id'])
-@Index(['applicationItemId', 'type'], { unique: true })
+@Index(['applicationItemId', 'type'], {
+  unique: true,
+  where: '"applicationItemId" IS NOT NULL'
+})
 export class InventoryOperation {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -31,12 +34,12 @@ export class InventoryOperation {
 
   @ManyToOne(() => Item, (item) => item.inventoryOperations, {
     nullable: false,
-    onDelete: 'RESTRICT',
+    onDelete: 'NO ACTION',
   })
   @JoinColumn({ name: 'itemId' })
   item!: Item;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', length: 255, })
   type!: InventoryOperationType;
 
   @Column({ type: 'integer' })
@@ -72,12 +75,12 @@ export class InventoryOperation {
   performedByUserId!: number;
 
   @ManyToOne(() => User, {
-    onDelete: 'RESTRICT',
+    onDelete: 'NO ACTION',
   })
   @JoinColumn({ name: 'performedByUserId' })
   performedByUser!: User;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   comment!: string | null;
 
   @CreateDateColumn()
