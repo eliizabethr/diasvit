@@ -35,19 +35,14 @@ export function getTypeOrmConfig(): TypeOrmModuleOptions {
       entities: entities,
 
       autoLoadEntities: true,
-      synchronize: false,
+      // synchronize: false,
+      synchronize: true, // TODO: use migrations
       logging: process.env.DB_LOGGING === 'true',
 
       options: {
         encrypt: true,
         trustServerCertificate: false,
       },
-
-      connectionTimeout: 60000,
-      extra: {
-        connectionTimeout: 60000,
-        requestTimeout: 60000,
-      }
     };
   }
 
