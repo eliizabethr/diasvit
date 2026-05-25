@@ -2,7 +2,7 @@ import { ApplicationItemUserResponseDto } from './application-item-user-response
 
 export class ApplicationUserResponseDto {
   id!: number;
-  items!: ApplicationItemUserResponseDto[];
+  items!: ApplicationItemDto[];
   fulfillmentType!: 'delivery' | 'pickup'; // TODO: make an enum
   deliveryCity!: string | null;
   deliveryAddress!: string | null;
@@ -22,4 +22,11 @@ export class ApplicationUserResponseDto {
     | 'shipped'
     | 'completed'
     | 'cancelled';
+}
+
+export class ApplicationItemDto {
+  id!: number;
+  name!: string;
+  quantity!: number;
+  unit!: string;
 }

@@ -39,8 +39,7 @@ export function formatApplicationItemsShort(
 
   const summary = visibleItems
     .map((applicationItem) => {
-      const unit = applicationItem.item.unit;
-      return `${applicationItem.item.name} — ${applicationItem.quantity} ${unit}`;
+      return `${applicationItem.name} — ${applicationItem.quantity} ${applicationItem.unit}`;
     })
     .join('; ');
 

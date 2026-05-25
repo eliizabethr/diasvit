@@ -37,10 +37,10 @@ export class ApplicationStatusTransition {
   @JoinColumn({ name: 'applicationId' })
   application!: Application;
 
-  @Column({ type: 'varchar', length: 255, })
+  @Column({ type: 'varchar', length: 255 })
   fromStatus!: ApplicationStatus;
 
-  @Column({ type: 'varchar', length: 255, })
+  @Column({ type: 'varchar', length: 255 })
   toStatus!: ApplicationStatus;
 
   @Column()

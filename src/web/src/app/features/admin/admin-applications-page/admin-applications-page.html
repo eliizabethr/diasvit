@@ -39,16 +39,14 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="applications-card__status">
-                <mat-label>Статус</mat-label>
-                <mat-select [formControl]="statusControl">
-                    <mat-option value="">Усі статуси</mat-option>
-
-                    @for (status of statuses; track status.value) {
-                    <mat-option [value]="status.value">
-                        {{ status.label }}
-                    </mat-option>
-                    }
-                </mat-select>
+              <mat-label>Статуси</mat-label>
+              <mat-select [formControl]="statusesControl" multiple>
+                @for (status of statuses; track status.value) {
+                  <mat-option [value]="status.value">
+                    {{ status.label }}
+                  </mat-option>
+                }
+              </mat-select>
             </mat-form-field>
 
             <button type="button" class="applications-card__reset" (click)="resetFilters()">
@@ -142,10 +140,15 @@
         <div class="applications-card__empty">
             <h3>Заявок не знайдено</h3>
 
-            @if (searchControl.value || statusControl.value) {
-            <p>За обраними фільтрами немає результатів.</p>
+            @if (
+              searchControl.value ||
+              statusesControl.value.length ||
+              categoryIdsControl.value.length ||
+              fulfillmentTypeControl.value
+            ) {
+              <p>За обраними фільтрами немає результатів.</p>
             } @else {
-            <p>У системі поки немає заявок на допомогу.</p>
+              <p>У системі поки немає заявок на допомогу.</p>
             }
         </div>
         }

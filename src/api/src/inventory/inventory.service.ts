@@ -109,12 +109,9 @@ export class InventoryService {
       currentStock: 'item.currentStock',
     };
 
-    const orderColumn = orderMap[orderBy];
+    const order = orderDirection.toUpperCase() as 'ASC' | 'DESC';
 
-    itemsQb
-      .orderBy(orderColumn, orderDirection.toUpperCase() as 'ASC' | 'DESC')
-      .offset(offset)
-      .limit(limit);
+    itemsQb.orderBy(orderMap[orderBy], order).offset(offset).limit(limit);
 
     const countQb = this.dataSource
       .getRepository(Item)

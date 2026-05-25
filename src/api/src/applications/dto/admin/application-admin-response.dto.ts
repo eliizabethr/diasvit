@@ -1,9 +1,6 @@
-import { UserAdminResponseDto } from '../../../users/dto/admin/user-admin-response.dto';
-import { ApplicationItemAdminResponseDto } from './application-item-admin-response.dto';
-
 export class ApplicationAdminResponseDto {
   id!: number;
-  items!: ApplicationItemAdminResponseDto[];
+  items!: ApplicationItemDto[];
   fulfillmentType!: 'delivery' | 'pickup'; // TODO: make an enum
   deliveryCity!: string | null;
   deliveryAddress!: string | null;
@@ -23,5 +20,19 @@ export class ApplicationAdminResponseDto {
     | 'shipped'
     | 'completed'
     | 'cancelled';
-  user!: UserAdminResponseDto;
+  user!: ApplicationUserDto;
+}
+
+export class ApplicationItemDto {
+  id!: number;
+  name!: string;
+  quantity!: number;
+  unit!: string;
+}
+
+export class ApplicationUserDto {
+  phone!: string;
+  firstName!: string;
+  middleName!: string;
+  lastName!: string;
 }
