@@ -37,7 +37,7 @@
 
 .reports-filter__button {
   min-height: 56px;
-  min-width: 190px;
+  min-width: 260px;
   border-radius: 14px;
   font-weight: 700;
 }
@@ -45,6 +45,16 @@
 :host ::ng-deep .reports-filter__button {
   --mdc-filled-button-container-color: #0d6efd;
   --mdc-filled-button-label-text-color: #ffffff;
+}
+
+.reports-filter__secondary {
+  min-height: 56px;
+  min-width: 190px;
+  padding: 0 28px;
+  border-radius: 14px;
+  color: #0d6efd;
+  font-weight: 700;
+  font-size: 16px;
 }
 
 .reports-card__error {
@@ -82,7 +92,7 @@
 
 .report-result__export {
   min-height: 44px;
-  border-radius: 12px;
+  border-radius: 14px;
   color: #0d6efd;
   font-weight: 700;
 }

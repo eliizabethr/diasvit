@@ -10,14 +10,12 @@ import { UsersService } from '../users/users.service';
 import { ItemsService } from '../items/items.service';
 import { ApplicationItem } from './entities/application-item.entity';
 import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
-import { ApplicationStatusService } from 'src/application-status/application-status.service';
 
 @Injectable()
 export class ApplicationsService {
   constructor(
     private readonly usersService: UsersService,
     private readonly itemsService: ItemsService,
-    private readonly applicationStatusService: ApplicationStatusService,
     @InjectRepository(Application)
     private readonly applicationsRepository: Repository<Application>,
     @InjectRepository(ApplicationItem)
