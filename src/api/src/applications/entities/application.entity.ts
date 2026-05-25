@@ -41,7 +41,7 @@ export class Application {
   )
   items!: ApplicationItem[];
 
-  @Column({ type: 'varchar', length: 255, })
+  @Column({ type: 'varchar', length: 255 })
   fulfillmentType!: FulfillmentType;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
@@ -66,7 +66,8 @@ export class Application {
   comment!: string | null;
 
   @Column({
-    type: 'varchar', length: 255,
+    type: 'varchar',
+    length: 255,
     default: ApplicationStatus.NEW,
   })
   currentStatus!: ApplicationStatus;

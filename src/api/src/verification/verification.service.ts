@@ -16,7 +16,9 @@ export class VerificationService {
     @InjectRepository(VerificationTicket)
     private readonly verificationTicketsRepository: Repository<VerificationTicket>,
   ) {
-    this.verifyServiceSid = configService.getOrThrow<string>('TWILIO_VERIFY_SERVICE_SID');
+    this.verifyServiceSid = configService.getOrThrow<string>(
+      'TWILIO_VERIFY_SERVICE_SID',
+    );
   }
 
   async requestCode(phone: string) {

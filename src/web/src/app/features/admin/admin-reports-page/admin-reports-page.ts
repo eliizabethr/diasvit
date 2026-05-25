@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 
@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-import { AidByCategoriesReportResponse } from '../../../core/models/report.model';
+import { AidByCategoriesReportResponse, AidByCategoriesReportTotals } from '../../../core/models/report.model';
 import { ReportsService } from '../../../core/services/reports.service';
 import { getApiErrorMessage } from '../../../shared/utils/api-error.util';
 import { formatDate } from '../../../shared/utils/date.util';
@@ -37,6 +37,33 @@ export class AdminReportsPage implements OnInit {
   readonly isLoading = signal(false);
   readonly isExporting = signal(false);
   readonly errorMessage = signal('');
+
+  readonly totals = computed<AidByCategoriesReportTotals>(() => {
+    const report = this.report();
+
+    if (!report) {
+      return {
+        receivedQuantity: 0,
+        issuedQuantity: 0,
+        currentStock: 0,
+      };
+    }
+
+    return report.data.reduce(
+      (totals, item) => {
+        totals.receivedQuantity += item.receivedQuantity;
+        totals.issuedQuantity += item.issuedQuantity;
+        totals.currentStock += item.currentStock;
+
+        return totals;
+      },
+      {
+        receivedQuantity: 0,
+        issuedQuantity: 0,
+        currentStock: 0,
+      },
+    );
+  });
 
   ngOnInit(): void {
     const { dateFrom, dateTo } = this.getDefaultPeriod();
@@ -71,6 +98,28 @@ export class AdminReportsPage implements OnInit {
         dateFrom,
         dateTo,
       })
+      .pipe(
+        finalize(() => {
+          this.isLoading.set(false);
+        }),
+      )
+      .subscribe({
+        next: (report) => {
+          this.report.set(report);
+        },
+        error: (error) => {
+          this.report.set(null);
+          this.errorMessage.set(getApiErrorMessage(error));
+        },
+      });
+  }
+
+  generateAllTimeReport(): void {
+    this.errorMessage.set('');
+    this.isLoading.set(true);
+
+    this.reportsService
+      .getAidByCategoriesReport({})
       .pipe(
         finalize(() => {
           this.isLoading.set(false);

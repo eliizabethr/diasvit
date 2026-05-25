@@ -66,8 +66,10 @@ export class UsersAdminController {
   ): Promise<PaginatedUsersAdminResponseDto> {
     const result = await this.usersService.findAll(
       query.search,
-      query.page !== undefined ? Number(query.page) : undefined,
-      query.limit !== undefined ? Number(query.limit) : undefined,
+      query.orderBy,
+      query.orderDirection,
+      query.page,
+      query.limit,
     );
 
     return {
@@ -78,8 +80,8 @@ export class UsersAdminController {
         middleName: user.middleName,
         lastName: user.lastName,
         dateOfBirth: user.dateOfBirth,
-        applicationsCount: user.applications.length, // TODO: optimize
-        roles: user.roles, // TODO: check proper fix
+        applicationsCount: user.applicationsCount,
+        roles: user.roles,
       })),
       page: result.page,
       limit: result.limit,

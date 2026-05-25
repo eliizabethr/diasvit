@@ -50,12 +50,12 @@ export class AdminDashboardPage implements OnInit {
       newApplications: this.applicationsService.getAdminApplications({
         page: 1,
         limit: 1,
-        status: 'new',
+        statuses: 'new',
       }),
       recentNewApplications: this.applicationsService.getAdminApplications({
         page: 1,
         limit: 8,
-        status: 'new',
+        statuses: 'new',
         orderBy: 'createdAt',
       }),
     })

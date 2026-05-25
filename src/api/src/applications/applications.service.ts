@@ -5,19 +5,17 @@ import {
   ApplicationStatus,
   FulfillmentType,
 } from './entities/application.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { ItemsService } from '../items/items.service';
 import { ApplicationItem } from './entities/application-item.entity';
 import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
-import { ApplicationStatusService } from 'src/application-status/application-status.service';
 
 @Injectable()
 export class ApplicationsService {
   constructor(
     private readonly usersService: UsersService,
     private readonly itemsService: ItemsService,
-    private readonly applicationStatusService: ApplicationStatusService,
     @InjectRepository(Application)
     private readonly applicationsRepository: Repository<Application>,
     @InjectRepository(ApplicationItem)
@@ -63,6 +61,133 @@ export class ApplicationsService {
   }
 
   async findAll(
+    search?: string,
+    categoryIds?: number[],
+    statuses?: ApplicationStatus[],
+    fulfillmentType?: FulfillmentType,
+    orderBy: 'createdAt' | 'fullName' | 'phone' | 'status' = 'createdAt',
+    orderDirection: 'asc' | 'desc' = 'asc',
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<PaginatedResult<Application>> {
+    const offset = (page - 1) * limit;
+
+    const baseQb = this.applicationsRepository
+      .createQueryBuilder('application')
+      .leftJoin('application.user', 'user')
+      .leftJoin('application.items', 'applicationItem')
+      .leftJoin('applicationItem.item', 'item')
+      .leftJoin('item.category', 'category');
+
+    if (search) {
+      baseQb.andWhere(
+        `(
+        user.searchFullName LIKE :search
+        OR user.phone LIKE :search
+      )`,
+        {
+          search: `%${search.toLowerCase()}%`,
+        },
+      );
+    }
+
+    if (categoryIds?.length) {
+      baseQb.andWhere('category.id IN (:...categoryIds)', {
+        categoryIds: categoryIds,
+      });
+    }
+
+    if (statuses?.length) {
+      baseQb.andWhere('application.currentStatus IN (:...statuses)', {
+        statuses: statuses,
+      });
+    }
+
+    if (fulfillmentType) {
+      baseQb.andWhere('application.fulfillmentType = :fulfillmentType', {
+        fulfillmentType: fulfillmentType,
+      });
+    }
+
+    const order = orderDirection.toUpperCase() as 'ASC' | 'DESC';
+
+    // TODO: maybe extract to top
+    const orderMap: Record<
+      'createdAt' | 'fullName' | 'phone' | 'status',
+      string
+    > = {
+      createdAt: 'application.createdAt',
+      fullName: 'user.searchFullName',
+      phone: 'user.phone',
+      status: 'application.currentStatus',
+    };
+
+    baseQb.orderBy(orderMap[orderBy], order);
+
+    const idsQb = baseQb
+      .clone()
+      .select('application.id', 'id')
+      .groupBy('application.id')
+      .offset(offset)
+      .limit(limit);
+
+    const countQb = baseQb
+      .clone()
+      .select('COUNT(DISTINCT application.id)', 'total');
+
+    const [idRows, countRow] = await Promise.all([
+      idsQb.getRawMany<{ id: number | string }>(),
+      countQb.getRawOne<{ total: number | string }>(),
+    ]);
+
+    // preserving the order
+    const applicationIds = idRows.map((row) => Number(row.id));
+    const total = Number(countRow?.total ?? 0);
+
+    if (applicationIds.length === 0) {
+      return {
+        data: [],
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      };
+    }
+
+    const applications = await this.applicationsRepository.find({
+      where: {
+        id: In(applicationIds),
+      },
+      relations: {
+        items: {
+          item: {
+            category: true,
+          },
+        },
+        user: true,
+      },
+    });
+
+    const applicationsById = new Map(
+      applications.map((application) => [application.id, application]),
+    );
+
+    const orderedApplications = applicationIds
+      .map((id) => applicationsById.get(id))
+      .filter((application): application is Application =>
+        Boolean(application),
+      );
+
+    return {
+      data: orderedApplications,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async findAllForUser(
     page: number = 1,
     limit: number = 10,
     userId?: number,
@@ -75,17 +200,11 @@ export class ApplicationsService {
         skip: (page - 1) * limit,
         take: limit,
         order: {
-          id: 'desc',
+          createdAt: 'desc',
         },
         relations: {
           items: {
-            application: true,
-            item: {
-              category: true,
-            },
-          },
-          user: {
-            applications: true,
+            item: true,
           },
         },
       });
