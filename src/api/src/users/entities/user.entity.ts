@@ -27,7 +27,14 @@ export class User {
   @Column({ type: 'date' })
   dateOfBirth!: string;
 
-  @Column('simple-array')
+  @Column({
+    type: 'varchar',
+    length: 255,
+    transformer: {
+      to: (value: string[]) => value?.join('|'),
+      from: (value: string) => value ? value.split('|') : [],
+    }
+  })
   roles!: UserRole[];
 
   @OneToMany(() => Application, (application) => application.user)
