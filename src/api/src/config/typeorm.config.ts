@@ -33,10 +33,11 @@ export function getTypeOrmConfig(): TypeOrmModuleOptions {
       database: process.env.DB_DATABASE,
 
       entities: entities,
+      migrations: ['dist/migrations/*.js'],
+      migrationsTableName: 'migrations',
 
       autoLoadEntities: true,
-      // synchronize: false,
-      synchronize: true, // TODO: use migrations
+      synchronize: false,
       logging: process.env.DB_LOGGING === 'true',
 
       options: {
@@ -55,12 +56,14 @@ export function getTypeOrmConfig(): TypeOrmModuleOptions {
   // development or local
   return {
     type: 'better-sqlite3',
-    database: process.env.DB_DATABASE ?? 'db.sqlite',
+    database: 'db.sqlite',
 
     entities: entities,
+    migrations: ['dist/migrations/*.js'],
+    migrationsTableName: 'migrations',
 
     autoLoadEntities: true,
-    synchronize: true,
-    logging: process.env.DB_LOGGING === 'true',
+    synchronize: false,
+    logging: true,
   };
 }
