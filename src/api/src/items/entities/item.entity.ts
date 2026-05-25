@@ -35,7 +35,7 @@ export class Item {
   @JoinColumn({ name: 'categoryId' })
   category!: ItemCategory;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', length: 255, })
   unit!: string;
 
   @Column({ type: 'integer', default: 0 })

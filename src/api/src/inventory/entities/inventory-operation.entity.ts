@@ -39,7 +39,7 @@ export class InventoryOperation {
   @JoinColumn({ name: 'itemId' })
   item!: Item;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', length: 255, })
   type!: InventoryOperationType;
 
   @Column({ type: 'integer' })
@@ -80,7 +80,7 @@ export class InventoryOperation {
   @JoinColumn({ name: 'performedByUserId' })
   performedByUser!: User;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   comment!: string | null;
 
   @CreateDateColumn()

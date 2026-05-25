@@ -37,10 +37,10 @@ export class ApplicationStatusTransition {
   @JoinColumn({ name: 'applicationId' })
   application!: Application;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', length: 255, })
   fromStatus!: ApplicationStatus;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', length: 255, })
   toStatus!: ApplicationStatus;
 
   @Column()
@@ -53,7 +53,7 @@ export class ApplicationStatusTransition {
   @JoinColumn({ name: 'changedByUserId' })
   changedByUser!: User;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   comment!: string | null;
 
   @CreateDateColumn()
