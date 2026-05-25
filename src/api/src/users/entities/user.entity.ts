@@ -1,5 +1,11 @@
 import { Application } from '../../applications/entities/application.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  Index,
+} from 'typeorm';
 
 export enum UserRole {
   USER = 'user',
@@ -24,6 +30,10 @@ export class User {
   @Column()
   lastName!: string;
 
+  @Index()
+  @Column()
+  searchFullName!: string; // for case-insensitive search, always lower-case
+
   @Column({ type: 'date' })
   dateOfBirth!: string;
 
@@ -32,8 +42,8 @@ export class User {
     length: 255,
     transformer: {
       to: (value: string[]) => value?.join('|'),
-      from: (value: string) => value ? value.split('|') : [],
-    }
+      from: (value: string) => (value ? value.split('|') : []),
+    },
   })
   roles!: UserRole[];
 

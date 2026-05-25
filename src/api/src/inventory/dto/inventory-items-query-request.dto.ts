@@ -28,7 +28,7 @@ export class InventoryItemsQueryRequestDto extends PaginationQueryDto {
 
   @IsOptional()
   @IsIn(['name', 'categoryName', 'currentStock'])
-  orderBy?: 'name' | 'categoryName' | 'currentStock';
+  orderBy?: 'name' | 'categoryName' | 'currentStock' = 'name';
 
   @IsOptional()
   @IsIn(['asc', 'desc'])

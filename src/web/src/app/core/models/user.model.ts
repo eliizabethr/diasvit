@@ -30,11 +30,13 @@ export interface CreateAdminUserRequest {
   roles: UserRole[];
 }
 
-export type AdminUsersOrderBy = 'phone' | 'lastName' | 'dateOfBirth';
+export type AdminUsersOrderBy = 'fullName' | 'phone' | 'age' | 'applicationsCount';
+export type OrderDirection = 'asc' | 'desc';
 
 export interface AdminUsersQueryParams {
   search?: string;
   orderBy?: AdminUsersOrderBy;
+  orderDirection?: OrderDirection;
   page?: number;
   limit?: number;
 }

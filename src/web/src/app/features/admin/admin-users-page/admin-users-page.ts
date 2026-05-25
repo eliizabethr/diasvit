@@ -67,6 +67,8 @@ export class AdminUsersPage implements OnInit, OnDestroy {
         page: this.page(),
         limit: this.limit(),
         search: this.searchControl.value.trim() || undefined,
+        orderBy: 'fullName',
+        orderDirection: 'asc',
       })
       .pipe(
         finalize(() => {

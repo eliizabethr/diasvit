@@ -11,7 +11,7 @@ import { ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         accountSid: configService.getOrThrow<string>('TWILIO_ACCOUNT_SID'),
-        authToken: configService.getOrThrow<string>('TWILIO_AUTH_TOKEN')
+        authToken: configService.getOrThrow<string>('TWILIO_AUTH_TOKEN'),
       }),
     }),
     TypeOrmModule.forFeature([VerificationTicket]),
@@ -19,4 +19,4 @@ import { ConfigService } from '@nestjs/config';
   providers: [VerificationService],
   exports: [VerificationService],
 })
-export class VerificationModule { }
+export class VerificationModule {}
