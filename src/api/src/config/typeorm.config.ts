@@ -48,7 +48,7 @@ export function getTypeOrmConfig(): TypeOrmModuleOptions {
       extra: {
         connectionTimeout: 60000,
         requestTimeout: 60000,
-      }
+      },
     };
   }
 

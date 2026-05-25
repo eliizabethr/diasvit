@@ -23,7 +23,7 @@ export enum InventoryOperationType {
 @Index(['itemId', 'id'])
 @Index(['applicationItemId', 'type'], {
   unique: true,
-  where: '"applicationItemId" IS NOT NULL'
+  where: '"applicationItemId" IS NOT NULL',
 })
 export class InventoryOperation {
   @PrimaryGeneratedColumn()
@@ -39,7 +39,7 @@ export class InventoryOperation {
   @JoinColumn({ name: 'itemId' })
   item!: Item;
 
-  @Column({ type: 'varchar', length: 255, })
+  @Column({ type: 'varchar', length: 255 })
   type!: InventoryOperationType;
 
   @Column({ type: 'integer' })

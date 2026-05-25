@@ -7,6 +7,10 @@ export class UsersQueryAdminRequestDto extends PaginationQueryDto {
   search?: string;
 
   @IsOptional()
-  @IsIn(['phone', 'lastName', 'dateOfBirth'])
-  orderBy?: 'phone' | 'lastName' | 'dateOfBirth'; // TODO: use User's properties
+  @IsIn(['fullName', 'phone', 'age', 'applicationsCount'])
+  orderBy?: 'fullName' | 'phone' | 'age' | 'applicationsCount' = 'fullName';
+
+  @IsOptional()
+  @IsIn(['asc', 'desc'])
+  orderDirection?: 'asc' | 'desc' = 'asc';
 }
