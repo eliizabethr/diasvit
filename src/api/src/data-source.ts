@@ -44,12 +44,12 @@ const dataSourceOptions: DataSourceOptions = isAzureDatabase
   }
   : {
     type: 'better-sqlite3',
-    database: process.env.DB_DATABASE ?? 'db.sqlite',
+    database: 'db.sqlite',
     entities,
     migrations: ['src/migrations/*.ts'],
     migrationsTableName: 'migrations',
     synchronize: false,
-    logging: process.env.DB_LOGGING === 'true',
+    logging: true,
   };
 
 export default new DataSource(dataSourceOptions);

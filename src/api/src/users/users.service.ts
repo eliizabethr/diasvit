@@ -57,6 +57,7 @@ export class UsersService {
       .addSelect('user.firstName', 'firstName')
       .addSelect('user.middleName', 'middleName')
       .addSelect('user.lastName', 'lastName')
+      .addSelect('user.searchFullName', 'searchFullName')
       .addSelect('user.dateOfBirth', 'dateOfBirth')
       .addSelect('user.roles', 'roles')
       .addSelect('COUNT(application.id)', 'applicationsCount')
@@ -65,6 +66,7 @@ export class UsersService {
       .addGroupBy('user.firstName')
       .addGroupBy('user.middleName')
       .addGroupBy('user.lastName')
+      .addGroupBy('user.searchFullName')
       .addGroupBy('user.dateOfBirth')
       .addGroupBy('user.roles');
 
