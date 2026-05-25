@@ -42,6 +42,12 @@ export function getTypeOrmConfig(): TypeOrmModuleOptions {
         encrypt: true,
         trustServerCertificate: false,
       },
+
+      connectionTimeout: 60000,
+      extra: {
+        connectionTimeout: 60000,
+        requestTimeout: 60000,
+      }
     };
   }
 
