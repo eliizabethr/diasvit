@@ -24,6 +24,7 @@
     "migration:generate:staging": "cross-env NODE_ENV=staging npm run typeorm -- migration:generate",
     "migration:generate:production": "cross-env NODE_ENV=production npm run typeorm -- migration:generate",
     "migration:run": "npm run typeorm -- migration:run",
+    "migration:run:compiled": "node ./node_modules/typeorm/cli.js -d data-source.js migration:run",
     "migration:run:staging": "cross-env NODE_ENV=staging npm run typeorm -- migration:run",
     "migration:run:production": "cross-env NODE_ENV=production npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert",
