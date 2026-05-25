@@ -20,7 +20,7 @@ export class ApplicationsService {
     private readonly applicationsRepository: Repository<Application>,
     @InjectRepository(ApplicationItem)
     private readonly applicationItemRepository: Repository<ApplicationItem>,
-  ) {}
+  ) { }
 
   async create(
     userId: number,
@@ -111,25 +111,46 @@ export class ApplicationsService {
 
     const order = orderDirection.toUpperCase() as 'ASC' | 'DESC';
 
-    // TODO: maybe extract to top
-    const orderMap: Record<
-      'createdAt' | 'fullName' | 'phone' | 'status',
-      string
-    > = {
-      createdAt: 'application.createdAt',
-      fullName: 'user.searchFullName',
-      phone: 'user.phone',
-      status: 'application.currentStatus',
-    };
-
-    baseQb.orderBy(orderMap[orderBy], order);
-
     const idsQb = baseQb
       .clone()
       .select('application.id', 'id')
-      .groupBy('application.id')
-      .offset(offset)
-      .limit(limit);
+      .groupBy('application.id');
+
+    switch (orderBy) {
+      case 'fullName':
+        idsQb
+          .addSelect('user.searchFullName', 'searchFullName')
+          .addGroupBy('user.searchFullName')
+          .orderBy('user.searchFullName', order)
+          .addOrderBy('application.id', 'DESC');
+        break;
+
+      case 'phone':
+        idsQb
+          .addSelect('user.phone', 'phone')
+          .addGroupBy('user.phone')
+          .orderBy('user.phone', order)
+          .addOrderBy('application.id', 'DESC');
+        break;
+
+      case 'status':
+        idsQb
+          .addSelect('application.currentStatus', 'status')
+          .addGroupBy('application.currentStatus')
+          .orderBy('application.currentStatus', order)
+          .addOrderBy('application.id', 'DESC');
+        break;
+
+      case 'createdAt':
+        idsQb
+          .addSelect('application.createdAt', 'createdAt')
+          .addGroupBy('application.createdAt')
+          .orderBy('application.createdAt', order)
+          .addOrderBy('application.id', 'DESC');
+        break;
+    }
+
+    idsQb.offset(offset).limit(limit);
 
     const countQb = baseQb
       .clone()
