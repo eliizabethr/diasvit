@@ -51,7 +51,7 @@ export class AdminApplicationsPage implements OnInit, OnDestroy {
   private readonly dialog = inject(MatDialog);
 
   readonly searchControl = new FormControl('', { nonNullable: true });
-  readonly statusControl = new FormControl<ApplicationStatus | ''>('', { nonNullable: true });
+  readonly statusesControl = new FormControl<ApplicationStatus[]>([], { nonNullable: true });
   readonly categoryIdsControl = new FormControl<number[]>([], { nonNullable: true });
   readonly fulfillmentTypeControl = new FormControl<FulfillmentType | ''>('', { nonNullable: true });
 
@@ -69,7 +69,7 @@ export class AdminApplicationsPage implements OnInit, OnDestroy {
   }));
 
   private searchSubscription?: Subscription;
-  private statusSubscription?: Subscription;
+  private statusesSubscription?: Subscription;
   private categoryIdsSubscription?: Subscription;
   private fulfillmentTypeSubscription?: Subscription;
 
@@ -84,7 +84,7 @@ export class AdminApplicationsPage implements OnInit, OnDestroy {
         this.loadApplications();
       });
 
-    this.statusSubscription = this.statusControl.valueChanges
+    this.statusesSubscription = this.statusesControl.valueChanges
       .pipe(distinctUntilChanged())
       .subscribe(() => {
         this.page.set(1);
@@ -108,7 +108,7 @@ export class AdminApplicationsPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.searchSubscription?.unsubscribe();
-    this.statusSubscription?.unsubscribe();
+    this.statusesSubscription?.unsubscribe();
     this.categoryIdsSubscription?.unsubscribe();
     this.fulfillmentTypeSubscription?.unsubscribe();
   }
@@ -118,13 +118,16 @@ export class AdminApplicationsPage implements OnInit, OnDestroy {
     this.isLoading.set(true);
 
     const selectedCategoryIds = this.categoryIdsControl.value;
+    const selectedStatuses = this.statusesControl.value;
 
     this.applicationsService
       .getAdminApplications({
         page: this.page(),
         limit: this.limit(),
         search: this.searchControl.value.trim() || undefined,
-        status: this.statusControl.value || undefined,
+        statuses: selectedStatuses.length
+          ? selectedStatuses.join(',')
+          : undefined,
         fulfillmentType: this.fulfillmentTypeControl.value || undefined,
         categoryIds: selectedCategoryIds.length
           ? selectedCategoryIds.join(',')
@@ -164,7 +167,7 @@ export class AdminApplicationsPage implements OnInit, OnDestroy {
 
   resetFilters(): void {
     this.searchControl.setValue('', { emitEvent: false });
-    this.statusControl.setValue('', { emitEvent: false });
+    this.statusesControl.setValue([], { emitEvent: false });
     this.categoryIdsControl.setValue([], { emitEvent: false });
     this.fulfillmentTypeControl.setValue('', { emitEvent: false });
 

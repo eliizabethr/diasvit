@@ -26,6 +26,10 @@ import {
 import { PaginatedApplicationsAdminResponseDto } from '../dto/admin/paginated-applications-admin-response.dto';
 import { ChangeApplicationStatusRequestDto } from '../dto/admin/change-application-status-request.dto';
 import { ApplicationStatusService } from 'src/application-status/application-status.service';
+import {
+  ApplicationStatus,
+  FulfillmentType,
+} from '../entities/application.entity';
 
 @ApiBearerAuth('JwtAuth')
 @UseGuards(AuthGuard, AdminGuard)
@@ -44,25 +48,24 @@ export class ApplicationsAdminController {
     @Query() query: ApplicationsQueryAdminRequestDto,
   ): Promise<PaginatedApplicationsAdminResponseDto> {
     const result = await this.applicationsService.findAll(
-      query.page !== undefined ? Number(query.page) : undefined,
-      query.limit !== undefined ? Number(query.limit) : undefined,
+      query.search,
+      query.categoryIds,
+      query.statuses as ApplicationStatus[],
+      query.fulfillmentType as FulfillmentType,
+      query.orderBy,
+      query.orderDirection,
+      query.page,
+      query.limit,
     );
 
     return {
       data: result.data.map((application) => ({
         id: application.id,
         items: application.items.map((item) => ({
-          id: item.id,
-          item: {
-            id: item.item.id,
-            name: item.item.name,
-            currentStock: item.item.currentStock,
-            category: item.item.category,
-            unit: item.item.unit,
-            createdAt: item.item.createdAt,
-            updatedAt: item.item.updatedAt,
-          },
+          id: item.item.id,
+          name: item.item.name,
           quantity: item.quantity,
+          unit: item.item.unit,
         })),
         fulfillmentType: application.fulfillmentType,
         deliveryCity: application.deliveryCity,
@@ -74,14 +77,10 @@ export class ApplicationsAdminController {
         comment: application.comment,
         status: application.currentStatus,
         user: {
-          id: application.user.id,
           phone: application.user.phone,
           firstName: application.user.firstName,
           middleName: application.user.middleName,
           lastName: application.user.lastName,
-          dateOfBirth: application.user.dateOfBirth,
-          applicationsCount: application.user.applications.length,
-          roles: application.user.roles, // TODO: check proper fix
         },
       })),
       page: result.page,
@@ -104,17 +103,10 @@ export class ApplicationsAdminController {
     return {
       id: application.id,
       items: application.items.map((item) => ({
-        id: item.id,
-        item: {
-          id: item.item.id,
-          name: item.item.name,
-          currentStock: item.item.currentStock,
-          category: item.item.category,
-          unit: item.item.unit,
-          createdAt: item.item.createdAt,
-          updatedAt: item.item.updatedAt,
-        },
+        id: item.item.id,
+        name: item.item.name,
         quantity: item.quantity,
+        unit: item.item.unit,
       })),
       fulfillmentType: application.fulfillmentType,
       deliveryCity: application.deliveryCity,
@@ -126,14 +118,10 @@ export class ApplicationsAdminController {
       comment: application.comment,
       status: application.currentStatus,
       user: {
-        id: application.user.id,
         phone: application.user.phone,
         firstName: application.user.firstName,
         middleName: application.user.middleName,
         lastName: application.user.lastName,
-        dateOfBirth: application.user.dateOfBirth,
-        applicationsCount: application.user.applications.length,
-        roles: application.user.roles, // TODO: check proper fix
       },
     };
   }
@@ -160,17 +148,10 @@ export class ApplicationsAdminController {
     return {
       id: application.id,
       items: application.items.map((item) => ({
-        id: item.id,
-        item: {
-          id: item.item.id,
-          name: item.item.name,
-          currentStock: item.item.currentStock,
-          category: item.item.category,
-          unit: item.item.unit,
-          createdAt: item.item.createdAt,
-          updatedAt: item.item.updatedAt,
-        },
+        id: item.item.id,
+        name: item.item.name,
         quantity: item.quantity,
+        unit: item.item.unit,
       })),
       fulfillmentType: application.fulfillmentType,
       deliveryCity: application.deliveryCity,
@@ -182,14 +163,10 @@ export class ApplicationsAdminController {
       comment: application.comment,
       status: application.currentStatus,
       user: {
-        id: application.user.id,
         phone: application.user.phone,
         firstName: application.user.firstName,
         middleName: application.user.middleName,
         lastName: application.user.lastName,
-        dateOfBirth: application.user.dateOfBirth,
-        applicationsCount: application.user.applications.length,
-        roles: application.user.roles, // TODO: check proper fix
       },
     };
   }

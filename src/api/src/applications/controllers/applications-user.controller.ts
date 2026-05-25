@@ -53,16 +53,10 @@ export class ApplicationsUserController {
     return {
       id: application.id,
       items: application.items.map((item) => ({
-        id: item.id,
-        item: {
-          id: item.item.id,
-          name: item.item.name,
-          category: item.item.category,
-          unit: item.item.unit,
-          createdAt: item.item.createdAt,
-          updatedAt: item.item.updatedAt,
-        },
+        id: item.item.id,
+        name: item.item.name,
         quantity: item.quantity,
+        unit: item.item.unit,
       })),
       fulfillmentType: application.fulfillmentType,
       deliveryCity: application.deliveryCity,
@@ -83,9 +77,9 @@ export class ApplicationsUserController {
     @Request() request,
     @Query() query: PaginationQueryDto,
   ): Promise<PaginatedApplicationsUserResponseDto> {
-    const result = await this.applicationsService.findAll(
-      query.page !== undefined ? Number(query.page) : undefined,
-      query.limit !== undefined ? Number(query.limit) : undefined,
+    const result = await this.applicationsService.findAllForUser(
+      query.page,
+      query.limit,
       request.user.sub,
     );
 
@@ -93,19 +87,10 @@ export class ApplicationsUserController {
       data: result.data.map((application) => ({
         id: application.id,
         items: application.items.map((item) => ({
-          id: item.id,
-          item: {
-            id: item.item.id,
-            name: item.item.name,
-            category: {
-              id: item.item.category.id,
-              name: item.item.category.name,
-            },
-            unit: item.item.unit,
-            createdAt: item.item.createdAt,
-            updatedAt: item.item.updatedAt,
-          },
+          id: item.item.id,
+          name: item.item.name,
           quantity: item.quantity,
+          unit: item.item.unit,
         })),
         fulfillmentType: application.fulfillmentType,
         deliveryCity: application.deliveryCity,
@@ -140,16 +125,10 @@ export class ApplicationsUserController {
     return {
       id: application.id,
       items: application.items.map((item) => ({
-        id: item.id,
-        item: {
-          id: item.item.id,
-          name: item.item.name,
-          category: item.item.category,
-          unit: item.item.unit,
-          createdAt: item.item.createdAt,
-          updatedAt: item.item.updatedAt,
-        },
+        id: item.item.id,
+        name: item.item.name,
         quantity: item.quantity,
+        unit: item.item.unit,
       })),
       fulfillmentType: application.fulfillmentType,
       deliveryCity: application.deliveryCity,

@@ -10,7 +10,7 @@ export class InventoryItemsQueryRequestDto extends PaginationQueryDto {
   @IsOptional()
   @Transform(({ value }) => {
     if (Array.isArray(value)) {
-      return value.map(Number);
+      return value.map(Number).filter((x) => !Number.isNaN(x));
     }
 
     if (typeof value === 'string') {
