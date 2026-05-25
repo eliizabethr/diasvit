@@ -110,47 +110,71 @@ jobs:
         run: |
           echo "Staging deployment"
 
-  # migrate-database-production:
-  #   name: Run Production Database Migrations
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - determine-environment
-  #     - build
+  migrate-database-production:
+    name: Run Production Database Migrations
+    runs-on: ubuntu-latest
+    needs:
+      - determine-environment
+      - build
 
-  #   if: needs.determine-environment.outputs.environment == 'production'
+    if: needs.determine-environment.outputs.environment == 'production'
 
-  #   environment:
-  #     name: production
+    environment:
+      name: production
 
-  #   defaults:
-  #     run:
-  #       working-directory: src/api
+    defaults:
+      run:
+        working-directory: src/api
 
-  #   env:
-  #     NODE_ENV: production
-  #     DB_HOST: ${{ secrets.DB_HOST }}
-  #     DB_PORT: ${{ secrets.DB_PORT }}
-  #     DB_USERNAME: ${{ secrets.DB_USERNAME }}
-  #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  #     DB_DATABASE: ${{ secrets.DB_DATABASE }}
-  #     DB_LOGGING: false
+    env:
+      NODE_ENV: production
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_DATABASE: ${{ secrets.DB_DATABASE }}
+      DB_LOGGING: false
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 22
-  #         cache: npm
-  #         cache-dependency-path: src/api/package-lock.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/api/package-lock.json
 
-  #     - name: Install backend dependencies
-  #       run: npm ci
+      - name: Install backend dependencies
+        run: npm ci
 
-  #     - name: Run TypeORM migrations on production database
-  #       run: npm run migration:run
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get runner IP and add firewall rule
+        run: |
+          RUNNER_IP=$(curl -s https://api.ipify.org)
+          echo "Runner IP: $RUNNER_IP"
+          az sql server firewall-rule create \
+            --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
+            --server ${{ vars.AZURE_SQL_SERVER }} \
+            --name "github-runner-${{ github.run_id }}" \
+            --start-ip-address $RUNNER_IP \
+            --end-ip-address $RUNNER_IP
+
+      - name: Run TypeORM migrations on production database
+        run: npm run migration:run
+
+      - name: Remove firewall rule
+        if: always()   # runs even if migration fails
+        run: |
+          az sql server firewall-rule delete \
+            --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
+            --server ${{ vars.AZURE_SQL_SERVER }} \
+            --name "github-runner-${{ github.run_id }}"
 
   deploy-api-production:
     name: Deploy API to Production
@@ -158,7 +182,7 @@ jobs:
     needs:
       - determine-environment
       - build
-      # - migrate-database-production
+      - migrate-database-production
 
     if: needs.determine-environment.outputs.environment == 'production'
 
@@ -185,7 +209,7 @@ jobs:
     needs:
       - determine-environment
       - build
-      # - migrate-database-production
+      - migrate-database-production
 
     if: needs.determine-environment.outputs.environment == 'production'
 
