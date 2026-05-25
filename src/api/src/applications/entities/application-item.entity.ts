@@ -20,7 +20,7 @@ export class ApplicationItem {
   application!: Application;
 
   @ManyToOne(() => Item, (item) => item.applicationItems, {
-    onDelete: 'RESTRICT',
+    onDelete: 'NO ACTION',
   })
   item!: Item;
 

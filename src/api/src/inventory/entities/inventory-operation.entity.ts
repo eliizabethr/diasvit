@@ -31,7 +31,7 @@ export class InventoryOperation {
 
   @ManyToOne(() => Item, (item) => item.inventoryOperations, {
     nullable: false,
-    onDelete: 'RESTRICT',
+    onDelete: 'NO ACTION',
   })
   @JoinColumn({ name: 'itemId' })
   item!: Item;
@@ -72,7 +72,7 @@ export class InventoryOperation {
   performedByUserId!: number;
 
   @ManyToOne(() => User, {
-    onDelete: 'RESTRICT',
+    onDelete: 'NO ACTION',
   })
   @JoinColumn({ name: 'performedByUserId' })
   performedByUser!: User;

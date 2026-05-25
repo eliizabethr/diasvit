@@ -48,7 +48,7 @@ export class ApplicationStatusTransition {
 
   @ManyToOne(() => User, {
     nullable: false,
-    onDelete: 'RESTRICT',
+    onDelete: 'NO ACTION',
   })
   @JoinColumn({ name: 'changedByUserId' })
   changedByUser!: User;

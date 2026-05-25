@@ -30,7 +30,7 @@ export class Item {
 
   @ManyToOne(() => ItemCategory, (category) => category.items, {
     nullable: false,
-    onDelete: 'RESTRICT',
+    onDelete: 'NO ACTION',
   })
   @JoinColumn({ name: 'categoryId' })
   category!: ItemCategory;
