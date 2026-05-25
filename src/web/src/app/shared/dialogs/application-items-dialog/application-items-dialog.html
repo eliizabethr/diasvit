@@ -24,8 +24,8 @@
       <tbody>
         @for (applicationItem of items(); track applicationItem.id) {
           <tr>
-            <td>{{ applicationItem.item.name }}</td>
-            <td>{{ applicationItem.quantity }} {{ applicationItem.item.unit }}</td>
+            <td>{{ applicationItem.name }}</td>
+            <td>{{ applicationItem.quantity }} {{ applicationItem.unit }}</td>
           </tr>
         }
       </tbody>

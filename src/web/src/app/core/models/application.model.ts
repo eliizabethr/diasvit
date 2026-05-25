@@ -1,5 +1,4 @@
 import { AdminUser } from './user.model';
-import { InventoryItem, UserItem } from './item.model';
 
 export type FulfillmentType = 'delivery' | 'pickup';
 
@@ -32,14 +31,23 @@ export interface CreateApplicationRequest {
 
 export interface UserApplicationItem {
   id: number;
-  item: UserItem;
+  name: string;
   quantity: number;
+  unit: string;
 }
 
 export interface AdminApplicationItem {
   id: number;
-  item: InventoryItem;
+  name: string;
   quantity: number;
+  unit: string;
+}
+
+export class ApplicationUser {
+  phone!: string;
+  firstName!: string;
+  middleName!: string;
+  lastName!: string;
 }
 
 export interface UserApplication {
@@ -68,10 +76,10 @@ export interface AdminApplication {
   updatedAt: string;
   comment: string | null;
   status: ApplicationStatus;
-  user: AdminUser;
+  user: ApplicationUser;
 }
 
-export interface UpdateApplicationAdminRequest {}
+export interface UpdateApplicationAdminRequest { }
 
 export interface ChangeApplicationStatusRequest {
   status: ApplicationStatus;
@@ -89,10 +97,8 @@ export interface AdminApplicationsQueryParams {
   page?: number;
   limit?: number;
   search?: string;
-  status?: ApplicationStatus;
+  statuses?: string;
   orderBy?: AdminApplicationsOrderBy;
-
-  // TODO: add on backend
   categoryIds?: string;
   fulfillmentType?: FulfillmentType;
 }
