@@ -33,6 +33,16 @@
           Згенерувати звіт
         }
       </button>
+
+      <button
+        type="button"
+        mat-stroked-button
+        class="reports-filter__secondary"
+        [disabled]="isLoading()"
+        (click)="generateAllTimeReport()"
+      >
+        За весь час
+      </button>
     </form>
 
     @if (errorMessage()) {
@@ -47,7 +57,11 @@
           <div>
             <h3>Звіт за період</h3>
             <p>
-              {{ formatDate(report()!.dateFrom) }} — {{ formatDate(report()!.dateTo) }}
+              @if (report()!.dateFrom && report()!.dateTo) {
+                {{ formatDate(report()!.dateFrom!) }} — {{ formatDate(report()!.dateTo!) }}
+              } @else {
+                За весь доступний період
+              }
             </p>
           </div>
 
@@ -71,7 +85,7 @@
             <span class="report-stat-card__icon">⬇</span>
             <div>
               <p>Надійшло допомоги</p>
-              <strong>{{ report()!.totals.received }}</strong>
+              <strong>{{ totals().receivedQuantity }}</strong>
             </div>
           </article>
 
@@ -79,20 +93,20 @@
             <span class="report-stat-card__icon">⬆</span>
             <div>
               <p>Видано допомоги</p>
-              <strong>{{ report()!.totals.issued }}</strong>
+              <strong>{{ totals().issuedQuantity }}</strong>
             </div>
           </article>
 
           <article class="report-stat-card">
             <span class="report-stat-card__icon">📦</span>
             <div>
-              <p>Залишок допомоги</p>
-              <strong>{{ report()!.totals.remaining }}</strong>
+              <p>Поточний залишок допомоги</p>
+              <strong>{{ totals().currentStock }}</strong>
             </div>
           </article>
         </div>
 
-        @if (report()!.categories.length) {
+        @if (report()!.data.length) {
           <div class="report-table-wrapper">
             <table class="report-table">
               <thead>
@@ -100,17 +114,17 @@
                   <th>Категорія</th>
                   <th>Надійшло</th>
                   <th>Видано</th>
-                  <th>Залишок</th>
+                  <th>Поточний залишок</th>
                 </tr>
               </thead>
 
               <tbody>
-                @for (row of report()!.categories; track row.categoryId) {
+                @for (row of report()!.data; track row.categoryId) {
                   <tr>
                     <td>{{ row.categoryName }}</td>
-                    <td>{{ row.received }}</td>
-                    <td>{{ row.issued }}</td>
-                    <td>{{ row.remaining }}</td>
+                    <td>{{ row.receivedQuantity }}</td>
+                    <td>{{ row.issuedQuantity }}</td>
+                    <td>{{ row.currentStock }}</td>
                   </tr>
                 }
               </tbody>
