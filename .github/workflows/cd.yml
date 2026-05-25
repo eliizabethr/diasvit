@@ -50,6 +50,16 @@ jobs:
         working-directory: src/api
         run: npm run build
 
+      - name: Prepare production artifacts
+        working-directory: src/api
+        run: |
+          cp package.json dist/
+          cp package-lock.json dist/
+          
+          # Navigate into dist and install ONLY production dependencies
+          cd dist
+          npm ci --omit=dev
+
       - name: Setup Node.js for Web
         uses: actions/setup-node@v4
         with:
