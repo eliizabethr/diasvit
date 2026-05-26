@@ -88,7 +88,6 @@ export class InventoryService {
       itemsQb.andWhere(
         `(
       item.searchName LIKE :search
-      OR category.searchName LIKE :search
     )`,
         {
           search: `%${this.normalizeSearchText(search)}%`,
@@ -122,7 +121,6 @@ export class InventoryService {
       itemsQb.andWhere(
         `(
       item.searchName LIKE :search
-      OR category.searchName LIKE :search
     )`,
         {
           search: `%${this.normalizeSearchText(search)}%`,
