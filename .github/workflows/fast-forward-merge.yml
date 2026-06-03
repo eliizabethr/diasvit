@@ -1,0 +1,25 @@
+name: Fast-Forward Merge on Label
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  fast-forward:
+    if: github.event.label.name == 'fast-forward-merge'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fast-forward merge
+        run: |
+          git config user.email "elizabeth.rozsokhach@gmail.com"
+          git config user.name "Yelyzaveta Rozsokhach"
+          BASE=${{ github.event.pull_request.base.ref }}
+          HEAD=${{ github.event.pull_request.head.ref }}
+          git checkout $BASE
+          git merge --ff-only origin/$HEAD
+          git push origin $BASE

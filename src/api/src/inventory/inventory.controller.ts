@@ -9,6 +9,8 @@ import {
   Request,
   HttpCode,
   HttpStatus,
+  Patch,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -28,6 +30,7 @@ import { InventoryOperationResponseDto } from './dto/inventory-operation-respons
 import { InventoryOperationType } from './entities/inventory-operation.entity';
 import { PaginatedInventoryOperationsResponseDto } from './dto/paginated-inventory-operations-response.dto';
 import { InventoryOperationsQueryRequestDto } from './dto/inventory-operationss-query-request.dto';
+import { UpdateInventoryItemRequestDto } from './dto/update-inventory-item-request.dto';
 
 @ApiBearerAuth('JwtAuth')
 @UseGuards(AuthGuard, AdminGuard)
@@ -99,6 +102,31 @@ export class InventoryController {
       limit: result.limit,
       total: result.total,
       totalPages: result.totalPages,
+    };
+  }
+
+  @Patch(':itemId')
+  async updateItem(
+    @Param('itemId', ParseIntPipe) itemId: number,
+    @Body() body: UpdateInventoryItemRequestDto,
+  ): Promise<InventoryItemResponseDto> {
+    const updatedItem = await this.inventoryService.updateItem(itemId, {
+      name: body.name,
+      unit: body.unit,
+      categoryId: body.categoryId,
+    });
+
+    return {
+      id: updatedItem.id,
+      name: updatedItem.name,
+      currentStock: updatedItem.currentStock,
+      category: {
+        id: updatedItem.category.id,
+        name: updatedItem.category.name,
+      },
+      unit: updatedItem.unit,
+      createdAt: updatedItem.createdAt,
+      updatedAt: updatedItem.updatedAt,
     };
   }
 

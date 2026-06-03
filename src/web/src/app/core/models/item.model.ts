@@ -29,8 +29,8 @@ export interface CreateInventoryItemRequest {
 
 export interface UpdateInventoryItemRequest {
   name?: string;
-  categoryId?: number;
   unit?: ItemUnit;
+  categoryId?: number;
 }
 
 export type InventoryOperationType =

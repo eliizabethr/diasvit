@@ -1,0 +1,28 @@
+name: Require Fast-Forward
+
+on:
+  pull_request:
+    branches:
+      - release
+      - main
+
+jobs:
+  check-fast-forward:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check fast-forward is possible
+        run: |
+          BASE=${{ github.event.pull_request.base.ref }}
+          HEAD=${{ github.event.pull_request.head.sha }}
+
+          # Check if base is an ancestor of head (i.e., FF is possible)
+          if git merge-base --is-ancestor origin/$BASE $HEAD; then
+            echo "✅ Fast-forward is possible."
+          else
+            echo "❌ Fast-forward is NOT possible. The target branch has commits not in the source branch. Rebase or fix the branch."
+            exit 1
+          fi
