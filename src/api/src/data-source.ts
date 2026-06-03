@@ -26,30 +26,30 @@ const isAzureDatabase =
 
 const dataSourceOptions: DataSourceOptions = isAzureDatabase
   ? {
-    type: 'mssql',
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT ?? 1433),
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    entities,
-    migrations: ['src/migrations/*.ts'],
-    migrationsTableName: 'migrations',
-    synchronize: false,
-    logging: process.env.DB_LOGGING === 'true',
-    options: {
-      encrypt: true,
-      trustServerCertificate: false,
-    },
-  }
+      type: 'mssql',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT ?? 1433),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+      entities,
+      migrations: ['src/migrations/*.ts'],
+      migrationsTableName: 'migrations',
+      synchronize: false,
+      logging: process.env.DB_LOGGING === 'true',
+      options: {
+        encrypt: true,
+        trustServerCertificate: false,
+      },
+    }
   : {
-    type: 'better-sqlite3',
-    database: 'db.sqlite',
-    entities,
-    migrations: ['src/migrations/*.ts'],
-    migrationsTableName: 'migrations',
-    synchronize: false,
-    logging: true,
-  };
+      type: 'better-sqlite3',
+      database: 'db.sqlite',
+      entities,
+      migrations: ['src/migrations/*.ts'],
+      migrationsTableName: 'migrations',
+      synchronize: false,
+      logging: true,
+    };
 
 export default new DataSource(dataSourceOptions);

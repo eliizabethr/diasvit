@@ -4,7 +4,12 @@ export class InventoryOperationResponseDto {
   id!: number;
   itemId!: number;
   // item!: InventoryItemResponseDto;
-  type!: 'income' | 'usage' | 'correction_increase' | 'correction_decrease';
+  type!:
+    | 'income'
+    | 'usage'
+    | 'return'
+    | 'correction_increase'
+    | 'correction_decrease';
   quantity!: number;
   stockBefore!: number;
   stockAfter!: number;

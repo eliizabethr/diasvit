@@ -15,6 +15,7 @@ import { ApplicationItem } from '../../applications/entities/application-item.en
 export enum InventoryOperationType {
   INCOME = 'income',
   USAGE = 'usage',
+  RETURN = 'return',
   CORRECTION_INCREASE = 'correction_increase',
   CORRECTION_DECREASE = 'correction_decrease',
 }

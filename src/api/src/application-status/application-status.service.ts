@@ -109,7 +109,7 @@ export class ApplicationStatusService {
           applicationId: applicationId,
         })
         .andWhere('currentStatus = :oldStatus', {
-          oldStatus,
+          oldStatus: oldStatus,
         })
         .execute();
 
@@ -121,7 +121,14 @@ export class ApplicationStatusService {
 
       if (newStatus === ApplicationStatus.APPROVED) {
         await this.issueApplicationItemsInTransaction(manager, {
-          application,
+          application: application,
+          performedByUserId: changedByUserId,
+        });
+      }
+
+      if (newStatus === ApplicationStatus.CANCELLED) {
+        await this.returnApplicationItemsInTransaction(manager, {
+          application: application,
           performedByUserId: changedByUserId,
         });
       }
@@ -195,6 +202,48 @@ export class ApplicationStatusService {
         applicationId: input.application.id,
         applicationItemId: applicationItem.id,
         comment: `Видано для заявки # ${input.application.id}`,
+      });
+    }
+  }
+
+  private async returnApplicationItemsInTransaction(
+    manager: EntityManager,
+    input: {
+      application: Application;
+      performedByUserId: number;
+    },
+  ) {
+    for (const applicationItem of input.application.items) {
+      const usageOperationExists = await manager.exists(InventoryOperation, {
+        where: {
+          applicationItemId: applicationItem.id,
+          type: InventoryOperationType.USAGE,
+        },
+      });
+
+      if (!usageOperationExists) {
+        continue;
+      }
+
+      const returnOperationExists = await manager.exists(InventoryOperation, {
+        where: {
+          applicationItemId: applicationItem.id,
+          type: InventoryOperationType.RETURN,
+        },
+      });
+
+      if (returnOperationExists) {
+        continue;
+      }
+
+      await this.inventoryService.createOperationForItemInTransaction(manager, {
+        performedByUserId: input.performedByUserId,
+        itemId: applicationItem.item.id,
+        operationType: InventoryOperationType.RETURN,
+        quantity: applicationItem.quantity,
+        applicationId: input.application.id,
+        applicationItemId: applicationItem.id,
+        comment: `Повернуто після скасування заявки # ${input.application.id}`,
       });
     }
   }

@@ -20,7 +20,7 @@ export class ApplicationsService {
     private readonly applicationsRepository: Repository<Application>,
     @InjectRepository(ApplicationItem)
     private readonly applicationItemRepository: Repository<ApplicationItem>,
-  ) { }
+  ) {}
 
   async create(
     userId: number,

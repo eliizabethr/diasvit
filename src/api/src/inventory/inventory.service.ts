@@ -165,69 +165,6 @@ export class InventoryService {
     };
   }
 
-  // async addIncome(
-  //   itemId: number,
-  //   quantity: number,
-  //   performedByUserId: number,
-  //   comment?: string,
-  // ) {
-  //   return await this.createOperation(
-  //     itemId,
-  //     InventoryOperationType.INCOME,
-  //     quantity,
-  //     performedByUserId,
-  //     comment,
-  //     undefined,
-  //   );
-  // }
-
-  // async useStock(
-  //   itemId: number,
-  //   quantity: number,
-  //   applicationId: number,
-  //   performedByUserId: number,
-  //   comment?: string,
-  // ) {
-  //   return await this.createOperation(
-  //     itemId,
-  //     InventoryOperationType.USAGE,
-  //     quantity,
-  //     performedByUserId,
-  //     comment,
-  //     applicationId,
-  //   );
-  // }
-
-  // async correctIncrease(
-  //   itemId: number,
-  //   quantity: number,
-  //   performedByUserId: number,
-  //   comment?: string,
-  // ) {
-  //   return this.createOperation(
-  //     itemId,
-  //     InventoryOperationType.CORRECTION_INCREASE,
-  //     quantity,
-  //     performedByUserId,
-  //     comment,
-  //   );
-  // }
-
-  // async correctDecrease(
-  //   itemId: number,
-  //   quantity: number,
-  //   performedByUserId: number,
-  //   comment?: string,
-  // ) {
-  //   return this.createOperation(
-  //     itemId,
-  //     InventoryOperationType.CORRECTION_DECREASE,
-  //     quantity,
-  //     performedByUserId,
-  //     comment,
-  //   );
-  // }
-
   async getCurrentStock(itemId: number): Promise<number> {
     const latestOperation = await this.dataSource
       .getRepository(InventoryOperation)
@@ -282,6 +219,10 @@ export class InventoryService {
       applicationItemId?: number;
     },
   ): Promise<InventoryOperation> {
+    if (input.quantity <= 0) {
+      throw new BadRequestException('Quantity must be greater than zero');
+    }
+
     const stockDelta = this.getStockDelta(input.operationType, input.quantity);
 
     // locking the Item first for everyone else
@@ -319,8 +260,8 @@ export class InventoryService {
       itemId: input.itemId,
       type: input.operationType,
       quantity: input.quantity,
-      stockBefore,
-      stockAfter,
+      stockBefore: stockBefore,
+      stockAfter: stockAfter,
       applicationId: input.applicationId,
       applicationItemId: input.applicationItemId,
       performedByUserId: input.performedByUserId,
@@ -379,6 +320,7 @@ export class InventoryService {
   ): number {
     switch (operationType) {
       case InventoryOperationType.INCOME:
+      case InventoryOperationType.RETURN:
       case InventoryOperationType.CORRECTION_INCREASE:
         return quantity;
 
