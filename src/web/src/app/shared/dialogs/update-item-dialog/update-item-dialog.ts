@@ -104,45 +104,50 @@ export class UpdateItemDialog {
       return;
     }
 
-    const value = this.form.getRawValue();
+    const payload = this.buildUpdatePayload();
+
+    if (Object.keys(payload).length === 0) {
+      this.close();
+      return;
+    }
 
     this.isSubmitting.set(true);
 
     this.itemsService
-      .updateAdminInventoryItem(this.data.item.id, {
-        name: value.name,
-        categoryId: value.categoryId,
-        unit: value.unit,
-      })
+      .updateAdminInventoryItem(this.data.item.id, payload)
       .subscribe({
         next: (updatedItem) => {
           this.dialogRef.close(updatedItem);
         },
         error: (error) => {
-          if (environment.useItemUpdateMockFallback) {
-            this.dialogRef.close(this.buildMockUpdatedItem());
-            return;
-          }
-
           this.isSubmitting.set(false);
           this.errorMessage.set(getApiErrorMessage(error));
         },
       });
   }
 
-  private buildMockUpdatedItem(): InventoryItem {
+  private buildUpdatePayload() {
     const value = this.form.getRawValue();
+    const payload: {
+      name?: string;
+      categoryId?: number;
+      unit?: ItemUnit;
+    } = {};
 
-    const selectedCategory = this.categories().find(
-      (category) => category.id === value.categoryId,
-    );
+    const normalizedName = value.name.trim();
 
-    return {
-      ...this.data.item,
-      name: value.name,
-      unit: value.unit,
-      category: selectedCategory ?? this.data.item.category,
-      updatedAt: new Date().toISOString(),
-    };
+    if (normalizedName !== this.data.item.name) {
+      payload.name = normalizedName;
+    }
+
+    if (value.categoryId !== this.data.item.category.id) {
+      payload.categoryId = value.categoryId;
+    }
+
+    if (value.unit !== this.data.item.unit) {
+      payload.unit = value.unit;
+    }
+
+    return payload;
   }
 }

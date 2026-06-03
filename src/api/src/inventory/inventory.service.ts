@@ -5,17 +5,26 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ItemCategory } from '../item-categories/entities/item-category.entity';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Item } from '../items/entities/item.entity';
 import {
   InventoryOperation,
   InventoryOperationType,
 } from './entities/inventory-operation.entity';
 import { PaginatedResult } from 'src/common/interfaces/paginated-result.interface';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class InventoryService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    @InjectRepository(InventoryOperation)
+    private readonly inventoryOperationRepository: Repository<InventoryOperation>,
+    @InjectRepository(Item)
+    private readonly itemRepository: Repository<Item>,
+    @InjectRepository(ItemCategory)
+    private readonly itemCategoryRepository: Repository<ItemCategory>,
+  ) {}
 
   async createItem(
     performedByUserId: number,
@@ -70,8 +79,7 @@ export class InventoryService {
   ): Promise<PaginatedResult<Item>> {
     const offset = (page - 1) * limit;
 
-    const itemsQb = this.dataSource
-      .getRepository(Item)
+    const itemsQb = this.itemRepository
       .createQueryBuilder('item')
       .leftJoin('item.category', 'category')
       .select('item.id', 'id')
@@ -112,8 +120,7 @@ export class InventoryService {
 
     itemsQb.orderBy(orderMap[orderBy], order).offset(offset).limit(limit);
 
-    const countQb = this.dataSource
-      .getRepository(Item)
+    const countQb = this.itemRepository
       .createQueryBuilder('item')
       .leftJoin('item.category', 'category');
 
@@ -165,9 +172,65 @@ export class InventoryService {
     };
   }
 
+  async updateItem(
+    itemId: number,
+    input: {
+      name?: string;
+      unit?: 'шт' | 'уп';
+      categoryId?: number;
+    },
+  ): Promise<Item> {
+    const item = await this.itemRepository.findOne({
+      where: { id: itemId },
+    });
+
+    if (!item) {
+      throw new NotFoundException('Item not found');
+    }
+
+    if (
+      input.name === undefined &&
+      input.unit === undefined &&
+      input.categoryId === undefined
+    ) {
+      throw new BadRequestException('No item fields provided for update');
+    }
+
+    if (input.categoryId !== undefined) {
+      const categoryExists = await this.itemCategoryRepository.exists({
+        where: { id: input.categoryId },
+      });
+
+      if (!categoryExists) {
+        throw new NotFoundException('Item category not found');
+      }
+
+      item.categoryId = input.categoryId;
+    }
+
+    if (input.name !== undefined) {
+      item.name = input.name;
+      item.searchName = this.normalizeSearchText(input.name);
+    }
+
+    if (input.unit !== undefined) {
+      item.unit = input.unit;
+    }
+
+    await this.itemRepository.save(item);
+
+    const updatedItem = await this.itemRepository.findOne({
+      where: { id: itemId },
+      relations: {
+        category: true,
+      },
+    });
+
+    return updatedItem!;
+  }
+
   async getCurrentStock(itemId: number): Promise<number> {
-    const latestOperation = await this.dataSource
-      .getRepository(InventoryOperation)
+    const latestOperation = await this.inventoryOperationRepository
       .createQueryBuilder('operation')
       .where('operation.itemId = :itemId', { itemId })
       .orderBy('operation.id', 'DESC')
@@ -189,7 +252,6 @@ export class InventoryService {
     applicationId?: number,
     applicationItemId?: number,
   ): Promise<InventoryOperation> {
-    // TODO: maybe remove, if it's called from controller?
     if (quantity <= 0) {
       throw new BadRequestException('Quantity must be greater than zero');
     }
@@ -287,9 +349,8 @@ export class InventoryService {
     page: number = 1,
     limit: number = 10,
   ): Promise<PaginatedResult<InventoryOperation>> {
-    const [inventoryOperations, total] = await this.dataSource
-      .getRepository(InventoryOperation)
-      .findAndCount({
+    const [inventoryOperations, total] =
+      await this.inventoryOperationRepository.findAndCount({
         where: {
           item: { id: itemId },
         },
