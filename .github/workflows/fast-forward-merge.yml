@@ -20,6 +20,7 @@ jobs:
           git config user.name "Yelyzaveta Rozsokhach"
           BASE=${{ github.event.pull_request.base.ref }}
           HEAD=${{ github.event.pull_request.head.ref }}
+          git fetch origin
           git checkout $BASE
-          git merge --ff-only origin/$HEAD
+          git rebase origin/$HEAD
           git push origin $BASE
