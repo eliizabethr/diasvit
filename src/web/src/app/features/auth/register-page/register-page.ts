@@ -12,6 +12,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { AuthLayout } from '../../../shared/components/auth-layout/auth-layout';
 import { OtpCodeInput } from '../../../shared/components/otp-code-input/otp-code-input';
 import { getApiErrorMessage } from '../../../shared/utils/api-error.util';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-register-page',
@@ -67,6 +68,13 @@ export class RegisterPage implements OnDestroy {
       return;
     }
 
+    if (!environment.smsVerificationEnabled) {
+      this.codeRequested.set(true);
+      this.form.controls.code.setValue('000000');
+      this.codeMessage.set('SMS-перевірку вимкнено.');
+      return;
+    }
+
     this.isRequestingCode.set(true);
 
     this.authService
@@ -105,15 +113,14 @@ export class RegisterPage implements OnDestroy {
 
     this.isRegistering.set(true);
 
-    this.authService
-      .verifyCode({
+    const registerRequest$ = environment.smsVerificationEnabled
+      ? this.authService.verifyCode({
         phone: formValue.phone,
         code: formValue.code,
         purpose: 'register',
-      })
-      .pipe(
-        switchMap((response) => {
-          return this.authService.register(
+      }).pipe(
+        switchMap((response) =>
+          this.authService.register(
             {
               phone: formValue.phone,
               firstName: formValue.firstName,
@@ -122,8 +129,21 @@ export class RegisterPage implements OnDestroy {
               dateOfBirth: formValue.dateOfBirth,
             },
             response.token,
-          );
-        }),
+          )
+        )
+      )
+      : this.authService.register(
+        {
+          phone: formValue.phone,
+          firstName: formValue.firstName,
+          middleName: formValue.middleName,
+          lastName: formValue.lastName,
+          dateOfBirth: formValue.dateOfBirth,
+        },
+        '');
+
+    registerRequest$
+      .pipe(
         finalize(() => {
           this.isRegistering.set(false);
         }),
