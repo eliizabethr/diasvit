@@ -12,8 +12,16 @@ async function bootstrap() {
     }),
   );
 
-  // TODO: check proper solution
-  app.enableCors();
+  app.enableCors({
+    origin: (process.env.CORS_ORIGINS ?? '')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean),
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: false,
+    maxAge: 86400,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Charity Foundation API')
