@@ -18,7 +18,7 @@ async function bootstrap() {
       .map((origin) => origin.trim())
       .filter(Boolean),
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Verification-Token'],
     credentials: false,
     maxAge: 86400,
   });
