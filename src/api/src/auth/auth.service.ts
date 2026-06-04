@@ -15,6 +15,7 @@ export class AuthService {
     private readonly verificationService: VerificationService,
   ) {}
 
+  // Trusted invocation, the SVS verification passed already
   async signIn(phone: string): Promise<string> {
     try {
       const user = await this.usersService.getByPhone(phone);
@@ -30,6 +31,7 @@ export class AuthService {
     }
   }
 
+  // Trusted invocation, the SVS verification passed already
   async register(
     phone: string,
     firstName: string,
@@ -37,6 +39,11 @@ export class AuthService {
     lastName: string,
     dateOfBirth: string,
   ): Promise<string> {
+    // Allow to sing in via the register API
+    if (await this.usersService.existsByPhone(phone)) {
+      return await this.signIn(phone);
+    }
+
     const user = await this.usersService.create(
       phone,
       firstName,
