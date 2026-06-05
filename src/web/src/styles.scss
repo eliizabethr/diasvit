@@ -17,6 +17,27 @@ html {
       density: 0,
     )
   );
+
+  --app-color-primary: #0d6efd;
+  --app-color-primary-pressed: #0b5ed7;
+  --app-color-page-muted: #edf4ff;
+  --app-color-text: #253a70;
+  --app-color-text-muted: #6b7280;
+  --app-color-placeholder: #9aa8bd;
+  --app-color-border: #dce3ef;
+  --app-color-border-hover: #c8d2e1;
+  --app-surface: #ffffff;
+  --app-radius-card: 8px;
+  --app-radius-control: 8px;
+  --app-font-size-title: 33px;
+  --app-font-size-subtitle: 16px;
+  --app-font-size-label: 15px;
+  --app-font-size-control: 16px;
+  --app-font-size-helper: 14px;
+  --app-control-height: 51px;
+  --app-control-padding-x: 15px;
+  --app-dialog-radius: var(--app-radius-card);
+  --app-dialog-padding: 28px;
 }
 
 body {
@@ -39,9 +60,21 @@ body {
 /* You can add global styles to this file, and also import other style files */
 
 .app-dialog-panel .mat-mdc-dialog-container {
-  --mdc-dialog-container-shape: 18px;
+  --mdc-dialog-container-shape: var(--app-dialog-radius);
 }
 
 .app-dialog-panel .mat-mdc-dialog-surface {
-  border-radius: 18px;
+  border-radius: var(--app-dialog-radius);
+}
+
+.app-dialog-panel .mat-mdc-dialog-content {
+  color: var(--app-color-text);
+  font-size: var(--app-font-size-control);
+}
+
+.app-dialog-panel .mat-mdc-dialog-title {
+  color: var(--app-color-text);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
 }

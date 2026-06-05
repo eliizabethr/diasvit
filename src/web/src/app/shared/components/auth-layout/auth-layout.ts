@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+type AuthCardSize = 'compact' | 'wide';
+
 @Component({
   selector: 'app-auth-layout',
   imports: [CommonModule, RouterLink],
@@ -14,4 +16,6 @@ export class AuthLayout {
   readonly footerText = input<string>();
   readonly footerLinkText = input<string>();
   readonly footerLink = input<string>();
+  readonly cardSize = input<AuthCardSize>('compact');
+  readonly showFooterDivider = input(false);
 }

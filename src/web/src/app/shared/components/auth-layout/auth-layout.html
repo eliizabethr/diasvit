@@ -1,10 +1,12 @@
 <div class="auth-layout">
-  <a class="auth-layout__logo" routerLink="/">
-    <span class="auth-layout__logo-mark">Д</span>
-    <span class="auth-layout__logo-text">Діасвіт Запоріжжя</span>
-  </a>
+  <main
+    class="auth-layout__card"
+    [class.auth-layout__card--wide]="cardSize() === 'wide'"
+  >
+    <a class="auth-layout__logo" routerLink="/" aria-label="Діасвіт Запоріжжя">
+      <img src="/images/logo.svg" alt="" />
+    </a>
 
-  <main class="auth-layout__card">
     <header class="auth-layout__header">
       <h1 class="auth-layout__title">{{ title() }}</h1>
 
@@ -20,6 +22,12 @@
     </section>
 
     @if (footerText() && footerLinkText() && footerLink()) {
+      @if (showFooterDivider()) {
+        <div class="auth-layout__divider">
+          <span>або</span>
+        </div>
+      }
+
       <footer class="auth-layout__footer">
         <span>{{ footerText() }}</span>
         <a [routerLink]="footerLink()">{{ footerLinkText() }}</a>

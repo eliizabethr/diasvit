@@ -1,51 +1,60 @@
 <app-auth-layout
-  title="Вхід у систему"
-  subtitle="Увійдіть за номером телефону, щоб переглядати свої заявки."
+  title="Вхід до кабінету"
+  subtitle="Увійдіть, щоб переглядати свої заявки та відстежувати їх статус"
   footerText="Ще не маєте облікового запису?"
   footerLinkText="Зареєструватися"
   footerLink="/auth/register"
+  cardSize="compact"
+  [showFooterDivider]="true"
 >
   <form class="sign-in-form" [formGroup]="form" (ngSubmit)="signIn()">
-    <mat-form-field appearance="outline" class="sign-in-form__field">
-      <mat-label>Номер телефону</mat-label>
-      <input
-        matInput
-        type="tel"
-        formControlName="phone"
-        placeholder="+380XXXXXXXXX"
-        autocomplete="tel"
-      />
+    <div class="sign-in-form__phone-row">
+      <div class="sign-in-form__control">
+        <label class="sign-in-form__label" for="sign-in-phone">Номер телефону</label>
 
-      @if (form.controls.phone.hasError('required') && form.controls.phone.touched) {
-        <mat-error>Введіть номер телефону</mat-error>
-      }
+        <mat-form-field appearance="outline" class="sign-in-form__field" subscriptSizing="dynamic">
+          <input
+            id="sign-in-phone"
+            matInput
+            type="tel"
+            formControlName="phone"
+            placeholder="+38 (___) ___-__-__"
+            autocomplete="tel"
+            (input)="onPhoneInput($event)"
+          />
 
-      @if (form.controls.phone.hasError('pattern') && form.controls.phone.touched) {
-        <mat-error>Введіть номер у форматі +380XXXXXXXXX</mat-error>
-      }
-    </mat-form-field>
+          @if (form.controls.phone.hasError('required') && form.controls.phone.touched) {
+            <mat-error>Введіть номер телефону</mat-error>
+          }
 
-    <button
-      type="button"
-      mat-stroked-button
-      class="sign-in-form__code-button"
-      [disabled]="isRequestingCode() || (codeRequested() && !canResendCode())"
-      (click)="requestCode()"
-    >
-      @if (isRequestingCode()) {
-        <mat-spinner diameter="18"></mat-spinner>
-      } @else if (!codeRequested()) {
-        Отримати код
-      } @else if (resendSecondsLeft() > 0) {
-        Надіслати ще раз через {{ resendSecondsLeft() }} с
-      } @else {
-        Надіслати код ще раз
-      }
-    </button>
+          @if (form.controls.phone.hasError('ukrainianPhone') && form.controls.phone.touched) {
+            <mat-error>Формат: +38 (0__) ___-__-__</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <button
+        type="button"
+        mat-stroked-button
+        class="sign-in-form__code-button"
+        [disabled]="isRequestingCode() || (codeRequested() && !canResendCode())"
+        (click)="requestCode()"
+      >
+        @if (isRequestingCode()) {
+          <mat-spinner diameter="16"></mat-spinner>
+        } @else if (!codeRequested()) {
+          Отримати код
+        } @else if (resendSecondsLeft() > 0) {
+          Через {{ resendSecondsLeft() }} с
+        } @else {
+          Ще раз
+        }
+      </button>
+    </div>
 
     @if (codeRequested()) {
       <div class="sign-in-form__otp">
-        <label class="sign-in-form__label">Код із SMS</label>
+        <span class="sign-in-form__label">Код із SMS</span>
 
         <app-otp-code-input formControlName="code"></app-otp-code-input>
 

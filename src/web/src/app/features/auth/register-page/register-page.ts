@@ -1,24 +1,32 @@
 import { Component, OnDestroy, inject, signal } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize, switchMap } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import { AuthLayout } from '../../../shared/components/auth-layout/auth-layout';
 import { OtpCodeInput } from '../../../shared/components/otp-code-input/otp-code-input';
 import { getApiErrorMessage } from '../../../shared/utils/api-error.util';
 import { environment } from '../../../../environments/environment';
+import {
+  formatUkrainianPhoneInput,
+  normalizeUkrainianPhoneDigits,
+  ukrainianPhoneValidator,
+} from '../../../shared/utils/phone.util';
 
 @Component({
   selector: 'app-register-page',
   imports: [
     ReactiveFormsModule,
     MatButtonModule,
+    MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
@@ -27,6 +35,10 @@ import { environment } from '../../../../environments/environment';
   ],
   templateUrl: './register-page.html',
   styleUrl: './register-page.scss',
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'uk-UA' },
+    provideNativeDateAdapter(),
+  ],
 })
 export class RegisterPage implements OnDestroy {
   private readonly fb = inject(NonNullableFormBuilder);
@@ -37,8 +49,8 @@ export class RegisterPage implements OnDestroy {
     lastName: ['', [Validators.required, Validators.minLength(2)]],
     firstName: ['', [Validators.required, Validators.minLength(2)]],
     middleName: ['', [Validators.required, Validators.minLength(2)]],
-    dateOfBirth: ['', [Validators.required]],
-    phone: ['', [Validators.required, Validators.pattern(/^\+?380\d{9}$/)]],
+    dateOfBirth: new FormControl<Date | null>(null, [Validators.required]),
+    phone: ['', [Validators.required, ukrainianPhoneValidator()]],
     code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
   });
 
@@ -55,6 +67,15 @@ export class RegisterPage implements OnDestroy {
 
   ngOnDestroy(): void {
     this.clearResendTimer();
+  }
+
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const formattedPhone = formatUkrainianPhoneInput(input.value);
+
+    this.form.controls.phone.setValue(formattedPhone);
+    input.value = formattedPhone;
+    this.moveCursorToEnd(input);
   }
 
   requestCode(): void {
@@ -79,7 +100,7 @@ export class RegisterPage implements OnDestroy {
 
     this.authService
       .requestCode({
-        phone: phoneControl.value,
+        phone: normalizeUkrainianPhoneDigits(phoneControl.value),
         purpose: 'register',
       })
       .pipe(
@@ -110,23 +131,25 @@ export class RegisterPage implements OnDestroy {
     }
 
     const formValue = this.form.getRawValue();
+    const phone = normalizeUkrainianPhoneDigits(formValue.phone);
+    const dateOfBirth = this.formatDateOfBirth(formValue.dateOfBirth);
 
     this.isRegistering.set(true);
 
     const registerRequest$ = environment.smsVerificationEnabled
       ? this.authService.verifyCode({
-        phone: formValue.phone,
+        phone,
         code: formValue.code,
         purpose: 'register',
       }).pipe(
         switchMap((response) =>
           this.authService.register(
             {
-              phone: formValue.phone,
+              phone,
               firstName: formValue.firstName,
               middleName: formValue.middleName,
               lastName: formValue.lastName,
-              dateOfBirth: formValue.dateOfBirth,
+              dateOfBirth,
             },
             response.token,
           )
@@ -134,11 +157,11 @@ export class RegisterPage implements OnDestroy {
       )
       : this.authService.register(
         {
-          phone: formValue.phone,
+          phone,
           firstName: formValue.firstName,
           middleName: formValue.middleName,
           lastName: formValue.lastName,
-          dateOfBirth: formValue.dateOfBirth,
+          dateOfBirth,
         },
         '');
 
@@ -184,6 +207,27 @@ export class RegisterPage implements OnDestroy {
     if (this.resendTimerId) {
       clearInterval(this.resendTimerId);
       this.resendTimerId = null;
+    }
+  }
+
+  private formatDateOfBirth(value: Date | null): string {
+    if (!value) {
+      return '';
+    }
+
+    const month = `${value.getMonth() + 1}`.padStart(2, '0');
+    const day = `${value.getDate()}`.padStart(2, '0');
+
+    return `${value.getFullYear()}-${month}-${day}`;
+  }
+
+  private moveCursorToEnd(input: HTMLInputElement): void {
+    const cursorPosition = input.value.length;
+
+    try {
+      input.setSelectionRange(cursorPosition, cursorPosition);
+    } catch {
+      // Some input implementations do not support manual cursor placement.
     }
   }
 }
