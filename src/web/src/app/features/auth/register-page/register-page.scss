@@ -1,72 +1,144 @@
-:host ::ng-deep .auth-layout__card {
-  width: min(100%, 780px);
-}
-
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 26px;
 }
 
 .register-form__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px 20px;
+  gap: 57px;
 }
 
-.register-form__phone-row {
-  grid-column: 1 / -1;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.register-form__phone {
-  flex: 1;
-}
-
-.register-form__code-button {
-  min-width: 150px;
-  min-height: 56px;
-  border-radius: 14px;
-  font-weight: 600;
-}
-
-.register-form__otp {
-  grid-column: 1 / -1;
+.register-form__column {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
+}
+
+.register-form__control,
+.register-form__otp {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
 }
 
 .register-form__label {
-  color: #374151;
-  font-size: 14px;
-  font-weight: 600;
+  color: var(--app-color-text);
+  font-size: var(--app-font-size-label);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.register-form__field {
+  width: 100%;
+}
+
+.register-form__phone-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 158px;
+  gap: 13px;
+  align-items: start;
+}
+
+.register-form__code-button {
+  min-height: var(--app-control-height);
+  border-radius: var(--app-radius-control);
+  font-size: var(--app-font-size-control);
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: normal;
 }
 
 .register-form__submit {
+  width: min(100%, 462px);
+  min-height: var(--app-control-height);
   align-self: center;
-  width: min(100%, 360px);
-  min-height: 48px;
-  border-radius: 999px;
-  font-weight: 600;
+  margin-top: 2px;
+  border-radius: var(--app-radius-control);
+  font-size: var(--app-font-size-control);
+  font-weight: 700;
+}
+
+.register-form__message,
+.register-form__error {
+  margin: 0;
+  font-size: var(--app-font-size-helper);
+  line-height: 1.4;
+  text-align: center;
 }
 
 .register-form__message {
-  margin: 0;
   color: #047857;
-  font-size: 14px;
-  line-height: 1.4;
-  text-align: center;
 }
 
 .register-form__error {
-  margin: 0;
   color: #b91c1c;
-  font-size: 14px;
-  line-height: 1.4;
-  text-align: center;
+}
+
+app-otp-code-input {
+  --otp-code-gap: 12px;
+  --otp-input-width: 52px;
+  --otp-input-height: 52px;
+  --otp-input-radius: var(--app-radius-control);
+  --otp-input-font-size: 22px;
+}
+
+:host ::ng-deep .register-form .mat-mdc-form-field {
+  --mdc-outlined-text-field-container-shape: var(--app-radius-control);
+  --mdc-outlined-text-field-outline-color: var(--app-color-border);
+  --mdc-outlined-text-field-hover-outline-color: var(--app-color-border-hover);
+  --mdc-outlined-text-field-focus-outline-color: var(--app-color-primary);
+  --mdc-outlined-text-field-input-text-color: var(--app-color-text);
+  --mdc-outlined-text-field-input-text-placeholder-color: var(--app-color-placeholder);
+  --mat-form-field-container-height: var(--app-control-height);
+  --mat-form-field-container-vertical-padding: 11px;
+}
+
+:host ::ng-deep .register-form .mat-mdc-text-field-wrapper {
+  height: var(--app-control-height);
+  padding: 0 var(--app-control-padding-x);
+}
+
+:host ::ng-deep .register-form .mat-mdc-form-field-flex,
+:host ::ng-deep .register-form .mat-mdc-form-field-infix {
+  min-height: var(--app-control-height);
+  align-items: center;
+}
+
+:host ::ng-deep .register-form .mat-mdc-form-field-infix {
+  display: flex;
+  padding: 0;
+}
+
+:host ::ng-deep .register-form input.mat-mdc-input-element {
+  color: var(--app-color-text);
+  font-size: var(--app-font-size-control);
+  line-height: 1.2;
+}
+
+:host ::ng-deep .register-form .mat-mdc-icon-button {
+  color: var(--app-color-placeholder);
+}
+
+:host ::ng-deep .register-form .mat-mdc-form-field-error-wrapper {
+  padding: 3px 0 0;
+}
+
+:host ::ng-deep .register-form mat-error {
+  font-size: 12px;
+}
+
+:host ::ng-deep .register-form__code-button {
+  --mdc-outlined-button-outline-color: var(--app-color-primary);
+  --mdc-outlined-button-label-text-color: var(--app-color-primary);
+  --mat-outlined-button-state-layer-color: var(--app-color-primary);
+}
+
+:host ::ng-deep .register-form__submit {
+  --mdc-filled-button-container-color: var(--app-color-primary);
+  --mdc-filled-button-label-text-color: #ffffff;
+  --mat-filled-button-state-layer-color: #ffffff;
 }
 
 :host ::ng-deep .register-form__code-button .mdc-button__label,
@@ -77,21 +149,50 @@
   gap: 8px;
 }
 
-:host ::ng-deep .register-form__submit {
-  --mdc-filled-button-container-color: #2563eb;
-  --mdc-filled-button-label-text-color: #ffffff;
-}
-
-@media (max-width: 720px) {
+@media (max-width: 1000px) {
   .register-form__grid {
-    grid-template-columns: 1fr;
+    gap: 36px;
   }
 
   .register-form__phone-row {
-    flex-direction: column;
+    grid-template-columns: minmax(0, 1fr) 145px;
+  }
+}
+
+@media (max-width: 760px) {
+  .register-form {
+    gap: 22px;
+  }
+
+  .register-form__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .register-form__column {
+    gap: 18px;
+  }
+
+  .register-form__phone-row {
+    grid-template-columns: 1fr;
   }
 
   .register-form__code-button {
     width: 100%;
+  }
+
+  app-otp-code-input {
+    --otp-code-gap: clamp(8px, 2vw, 12px);
+    --otp-input-width: clamp(38px, 12vw, 50px);
+    --otp-input-height: clamp(38px, 12vw, 50px);
+  }
+}
+
+@media (max-width: 420px) {
+  .register-form__label,
+  :host ::ng-deep .register-form input.mat-mdc-input-element,
+  .register-form__code-button,
+  .register-form__submit {
+    font-size: 14px;
   }
 }

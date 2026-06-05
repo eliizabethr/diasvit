@@ -4,46 +4,125 @@
   gap: 18px;
 }
 
+.sign-in-form__phone-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 136px;
+  gap: 11px;
+  align-items: end;
+}
+
+.sign-in-form__control,
+.sign-in-form__otp {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.sign-in-form__label {
+  color: var(--app-color-text);
+  font-size: var(--app-font-size-label);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 .sign-in-form__field {
   width: 100%;
 }
 
 .sign-in-form__code-button,
 .sign-in-form__submit {
-  width: 100%;
-  min-height: 46px;
-  border-radius: 999px;
-  font-weight: 600;
+  min-height: var(--app-control-height);
+  border-radius: var(--app-radius-control);
+  font-size: var(--app-font-size-control);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sign-in-form__code-button {
+  width: 136px;
+  min-width: 136px;
+  padding: 0 11px;
+  white-space: normal;
 }
 
 .sign-in-form__submit {
-  margin-top: 4px;
+  width: 100%;
+  margin-top: 1px;
 }
 
-.sign-in-form__otp {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.sign-in-form__label {
-  color: #374151;
-  font-size: 14px;
-  font-weight: 600;
+.sign-in-form__message,
+.sign-in-form__error {
+  margin: 0;
+  font-size: var(--app-font-size-helper);
+  line-height: 1.35;
 }
 
 .sign-in-form__message {
-  margin: -4px 0 0;
   color: #047857;
-  font-size: 14px;
-  line-height: 1.4;
 }
 
 .sign-in-form__error {
-  margin: -4px 0 0;
   color: #b91c1c;
-  font-size: 14px;
-  line-height: 1.4;
+}
+
+app-otp-code-input {
+  --otp-code-gap: 11px;
+  --otp-input-width: 46px;
+  --otp-input-height: 46px;
+  --otp-input-radius: var(--app-radius-control);
+  --otp-input-font-size: 22px;
+}
+
+:host ::ng-deep .sign-in-form .mat-mdc-form-field {
+  --mdc-outlined-text-field-container-shape: var(--app-radius-control);
+  --mdc-outlined-text-field-outline-color: var(--app-color-border);
+  --mdc-outlined-text-field-hover-outline-color: var(--app-color-border-hover);
+  --mdc-outlined-text-field-focus-outline-color: var(--app-color-primary);
+  --mdc-outlined-text-field-input-text-color: var(--app-color-text);
+  --mdc-outlined-text-field-input-text-placeholder-color: var(--app-color-placeholder);
+  --mat-form-field-container-height: var(--app-control-height);
+  --mat-form-field-container-vertical-padding: 11px;
+}
+
+:host ::ng-deep .sign-in-form .mat-mdc-text-field-wrapper {
+  height: var(--app-control-height);
+  padding: 0 var(--app-control-padding-x);
+}
+
+:host ::ng-deep .sign-in-form .mat-mdc-form-field-flex,
+:host ::ng-deep .sign-in-form .mat-mdc-form-field-infix {
+  min-height: var(--app-control-height);
+  align-items: center;
+}
+
+:host ::ng-deep .sign-in-form .mat-mdc-form-field-infix {
+  display: flex;
+  padding: 0;
+}
+
+:host ::ng-deep .sign-in-form input.mat-mdc-input-element {
+  font-size: var(--app-font-size-control);
+  line-height: 1.2;
+}
+
+:host ::ng-deep .sign-in-form .mat-mdc-form-field-error-wrapper {
+  padding: 3px 0 0;
+}
+
+:host ::ng-deep .sign-in-form mat-error {
+  font-size: 12px;
+}
+
+:host ::ng-deep .sign-in-form__code-button {
+  --mdc-outlined-button-outline-color: var(--app-color-primary);
+  --mdc-outlined-button-label-text-color: var(--app-color-primary);
+  --mat-outlined-button-state-layer-color: var(--app-color-primary);
+}
+
+:host ::ng-deep .sign-in-form__submit {
+  --mdc-filled-button-container-color: var(--app-color-primary);
+  --mdc-filled-button-label-text-color: #ffffff;
+  --mat-filled-button-state-layer-color: #ffffff;
 }
 
 :host ::ng-deep .sign-in-form__code-button .mdc-button__label,
@@ -51,10 +130,21 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
-:host ::ng-deep .sign-in-form__submit {
-  --mdc-filled-button-container-color: #2563eb;
-  --mdc-filled-button-label-text-color: #ffffff;
+@media (max-width: 420px) {
+  .sign-in-form__phone-row {
+    grid-template-columns: 1fr;
+  }
+
+  .sign-in-form__code-button {
+    width: 100%;
+  }
+
+  app-otp-code-input {
+    --otp-code-gap: 8px;
+    --otp-input-width: clamp(36px, 12vw, 46px);
+    --otp-input-height: clamp(36px, 12vw, 46px);
+  }
 }

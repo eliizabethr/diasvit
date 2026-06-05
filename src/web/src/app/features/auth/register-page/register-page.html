@@ -4,107 +4,157 @@
   footerText="Вже маєте обліковий запис?"
   footerLinkText="Увійти"
   footerLink="/auth/sign-in"
+  cardSize="wide"
 >
   <form class="register-form" [formGroup]="form" (ngSubmit)="register()">
     <div class="register-form__grid">
-      <mat-form-field appearance="outline">
-        <mat-label>Прізвище</mat-label>
-        <input matInput formControlName="lastName" placeholder="Введіть Ваше прізвище" />
+      <div class="register-form__column">
+        <div class="register-form__control">
+          <label class="register-form__label" for="register-last-name">Прізвище *</label>
 
-        @if (form.controls.lastName.hasError('required') && form.controls.lastName.touched) {
-          <mat-error>Введіть прізвище</mat-error>
-        }
+          <mat-form-field appearance="outline" class="register-form__field" subscriptSizing="dynamic">
+            <input
+              id="register-last-name"
+              matInput
+              formControlName="lastName"
+              placeholder="Введіть Ваше прізвище..."
+            />
 
-        @if (form.controls.lastName.hasError('minlength') && form.controls.lastName.touched) {
-          <mat-error>Мінімум 2 символи</mat-error>
-        }
-      </mat-form-field>
+            @if (form.controls.lastName.hasError('required') && form.controls.lastName.touched) {
+              <mat-error>Введіть прізвище</mat-error>
+            }
 
-      <mat-form-field appearance="outline">
-        <mat-label>Ім’я</mat-label>
-        <input matInput formControlName="firstName" placeholder="Введіть Ваше ім’я" />
+            @if (form.controls.lastName.hasError('minlength') && form.controls.lastName.touched) {
+              <mat-error>Мінімум 2 символи</mat-error>
+            }
+          </mat-form-field>
+        </div>
 
-        @if (form.controls.firstName.hasError('required') && form.controls.firstName.touched) {
-          <mat-error>Введіть ім’я</mat-error>
-        }
+        <div class="register-form__control">
+          <label class="register-form__label" for="register-first-name">Ім’я *</label>
 
-        @if (form.controls.firstName.hasError('minlength') && form.controls.firstName.touched) {
-          <mat-error>Мінімум 2 символи</mat-error>
-        }
-      </mat-form-field>
+          <mat-form-field appearance="outline" class="register-form__field" subscriptSizing="dynamic">
+            <input
+              id="register-first-name"
+              matInput
+              formControlName="firstName"
+              placeholder="Введіть Ваше ім’я..."
+            />
 
-      <mat-form-field appearance="outline">
-        <mat-label>По батькові</mat-label>
-        <input matInput formControlName="middleName" placeholder="Введіть по батькові" />
+            @if (form.controls.firstName.hasError('required') && form.controls.firstName.touched) {
+              <mat-error>Введіть ім’я</mat-error>
+            }
 
-        @if (form.controls.middleName.hasError('required') && form.controls.middleName.touched) {
-          <mat-error>Введіть по батькові</mat-error>
-        }
+            @if (form.controls.firstName.hasError('minlength') && form.controls.firstName.touched) {
+              <mat-error>Мінімум 2 символи</mat-error>
+            }
+          </mat-form-field>
+        </div>
 
-        @if (form.controls.middleName.hasError('minlength') && form.controls.middleName.touched) {
-          <mat-error>Мінімум 2 символи</mat-error>
-        }
-      </mat-form-field>
+        <div class="register-form__control">
+          <label class="register-form__label" for="register-middle-name">По-батькові *</label>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Дата народження</mat-label>
-        <input matInput type="date" formControlName="dateOfBirth" />
+          <mat-form-field appearance="outline" class="register-form__field" subscriptSizing="dynamic">
+            <input
+              id="register-middle-name"
+              matInput
+              formControlName="middleName"
+              placeholder="Введіть Ваше по-батькові..."
+            />
 
-        @if (form.controls.dateOfBirth.hasError('required') && form.controls.dateOfBirth.touched) {
-          <mat-error>Оберіть дату народження</mat-error>
-        }
-      </mat-form-field>
+            @if (form.controls.middleName.hasError('required') && form.controls.middleName.touched) {
+              <mat-error>Введіть по батькові</mat-error>
+            }
 
-      <div class="register-form__phone-row">
-        <mat-form-field appearance="outline" class="register-form__phone">
-          <mat-label>Номер телефону</mat-label>
-          <input
-            matInput
-            type="tel"
-            formControlName="phone"
-            placeholder="+380XXXXXXXXX"
-            autocomplete="tel"
-          />
-
-          @if (form.controls.phone.hasError('required') && form.controls.phone.touched) {
-            <mat-error>Введіть номер телефону</mat-error>
-          }
-
-          @if (form.controls.phone.hasError('pattern') && form.controls.phone.touched) {
-            <mat-error>Формат: +380XXXXXXXXX</mat-error>
-          }
-        </mat-form-field>
-
-        <button
-          type="button"
-          mat-stroked-button
-          class="register-form__code-button"
-          [disabled]="isRequestingCode() || (codeRequested() && !canResendCode())"
-          (click)="requestCode()"
-        >
-          @if (isRequestingCode()) {
-            <mat-spinner diameter="18"></mat-spinner>
-          } @else if (!codeRequested()) {
-            Отримати код
-          } @else if (resendSecondsLeft() > 0) {
-            Ще раз через {{ resendSecondsLeft() }} с
-          } @else {
-            Надіслати ще раз
-          }
-        </button>
+            @if (form.controls.middleName.hasError('minlength') && form.controls.middleName.touched) {
+              <mat-error>Мінімум 2 символи</mat-error>
+            }
+          </mat-form-field>
+        </div>
       </div>
 
-      @if (codeRequested()) {
-        <div class="register-form__otp">
-          <label class="register-form__label">Код із SMS</label>
+      <div class="register-form__column">
+        <div class="register-form__control">
+          <label class="register-form__label" for="register-date-of-birth">Дата народження *</label>
 
-          <app-otp-code-input formControlName="code"></app-otp-code-input>
+          <mat-form-field appearance="outline" class="register-form__field" subscriptSizing="dynamic">
+            <input
+              id="register-date-of-birth"
+              matInput
+              readonly
+              formControlName="dateOfBirth"
+              placeholder="дд.мм.рррр"
+              [matDatepicker]="birthDatePicker"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="birthDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #birthDatePicker></mat-datepicker>
 
-          @if (form.controls.code.invalid && form.controls.code.touched) {
-            <p class="register-form__error">Введіть 6-значний код підтвердження</p>
-          }
+            @if (form.controls.dateOfBirth.hasError('required') && form.controls.dateOfBirth.touched) {
+              <mat-error>Оберіть дату народження</mat-error>
+            }
+          </mat-form-field>
         </div>
-      }
+
+        <div class="register-form__control">
+          <label class="register-form__label" for="register-phone">Номер телефону *</label>
+
+          <div class="register-form__phone-row">
+            <mat-form-field
+              appearance="outline"
+              class="register-form__field register-form__phone"
+              subscriptSizing="dynamic"
+            >
+              <input
+                id="register-phone"
+                matInput
+                type="tel"
+                formControlName="phone"
+                placeholder="+38 (___) ___-__-__"
+                autocomplete="tel"
+                (input)="onPhoneInput($event)"
+              />
+
+              @if (form.controls.phone.hasError('required') && form.controls.phone.touched) {
+                <mat-error>Введіть номер телефону</mat-error>
+              }
+
+              @if (form.controls.phone.hasError('ukrainianPhone') && form.controls.phone.touched) {
+                <mat-error>Формат: +38 (0__) ___-__-__</mat-error>
+              }
+            </mat-form-field>
+
+            <button
+              type="button"
+              mat-stroked-button
+              class="register-form__code-button"
+              [disabled]="isRequestingCode() || (codeRequested() && !canResendCode())"
+              (click)="requestCode()"
+            >
+              @if (isRequestingCode()) {
+                <mat-spinner diameter="18"></mat-spinner>
+              } @else if (!codeRequested()) {
+                Отримати код
+              } @else if (resendSecondsLeft() > 0) {
+                Ще раз через {{ resendSecondsLeft() }} с
+              } @else {
+                Надіслати ще раз
+              }
+            </button>
+          </div>
+        </div>
+
+        @if (codeRequested()) {
+          <div class="register-form__otp">
+            <span class="register-form__label">Код із SMS</span>
+
+            <app-otp-code-input formControlName="code"></app-otp-code-input>
+
+            @if (form.controls.code.invalid && form.controls.code.touched) {
+              <p class="register-form__error">Введіть 6-значний код підтвердження</p>
+            }
+          </div>
+        }
+      </div>
     </div>
 
     @if (codeMessage()) {

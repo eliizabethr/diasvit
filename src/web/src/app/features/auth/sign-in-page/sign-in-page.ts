@@ -13,6 +13,11 @@ import { AuthLayout } from '../../../shared/components/auth-layout/auth-layout';
 import { OtpCodeInput } from '../../../shared/components/otp-code-input/otp-code-input';
 import { getApiErrorMessage } from '../../../shared/utils/api-error.util';
 import { environment } from '../../../../environments/environment';
+import {
+  formatUkrainianPhoneInput,
+  normalizeUkrainianPhoneDigits,
+  ukrainianPhoneValidator,
+} from '../../../shared/utils/phone.util';
 
 @Component({
   selector: 'app-sign-in-page',
@@ -38,7 +43,7 @@ export class SignInPage implements OnDestroy {
       '',
       [
         Validators.required,
-        Validators.pattern(/^\+?380\d{9}$/),
+        ukrainianPhoneValidator(),
       ],
     ],
     code: [
@@ -64,6 +69,15 @@ export class SignInPage implements OnDestroy {
     this.clearResendTimer();
   }
 
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const formattedPhone = formatUkrainianPhoneInput(input.value);
+
+    this.form.controls.phone.setValue(formattedPhone);
+    input.value = formattedPhone;
+    this.moveCursorToEnd(input);
+  }
+
   requestCode(): void {
     this.errorMessage.set('');
     this.codeMessage.set('');
@@ -86,7 +100,7 @@ export class SignInPage implements OnDestroy {
 
     this.authService
       .requestCode({
-        phone: phoneControl.value,
+        phone: normalizeUkrainianPhoneDigits(phoneControl.value),
         purpose: 'sign_in',
       })
       .pipe(
@@ -116,7 +130,8 @@ export class SignInPage implements OnDestroy {
       return;
     }
 
-    const { phone, code } = this.form.getRawValue();
+    const { code } = this.form.getRawValue();
+    const phone = normalizeUkrainianPhoneDigits(this.form.controls.phone.value);
 
     this.isSigningIn.set(true);
 
@@ -168,6 +183,16 @@ export class SignInPage implements OnDestroy {
     if (this.resendTimerId) {
       clearInterval(this.resendTimerId);
       this.resendTimerId = null;
+    }
+  }
+
+  private moveCursorToEnd(input: HTMLInputElement): void {
+    const cursorPosition = input.value.length;
+
+    try {
+      input.setSelectionRange(cursorPosition, cursorPosition);
+    } catch {
+      // Some input implementations do not support manual cursor placement.
     }
   }
 }
