@@ -1,15 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import { CurrentUserService } from '../../../core/auth/current-user.service';
 import { ApplicationsService } from '../../../core/services/applications.service';
 import { UserApplication } from '../../../core/models/application.model';
 import { PaginatedResponse } from '../../../core/models/pagination.model';
+import { PublicHeader } from '../../../shared/components/public-header/public-header';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { getApiErrorMessage } from '../../../shared/utils/api-error.util';
@@ -19,6 +21,7 @@ import {
   formatApplicationNumber,
 } from '../../../shared/utils/application.util';
 import { formatDate } from '../../../shared/utils/date.util';
+import { formatUkrainianPhoneInput } from '../../../shared/utils/phone.util';
 import { formatFullName } from '../../../shared/utils/user.util';
 import { MatDialog } from '@angular/material/dialog';
 import { ApplicationItemsDialog } from '../../../shared/dialogs/application-items-dialog/application-items-dialog';
@@ -27,8 +30,9 @@ import { ApplicationItemsDialog } from '../../../shared/dialogs/application-item
   selector: 'app-profile-page',
   imports: [
     CommonModule,
-    RouterLink,
     MatButtonModule,
+    MatIconModule,
+    PublicHeader,
     StatusBadge,
     Pagination,
   ],
@@ -115,9 +119,11 @@ export class ProfilePage implements OnInit {
       data: {
         application,
       },
-      width: '680px',
+      width: 'min(752px, calc(100vw - 32px))',
       maxWidth: 'calc(100vw - 32px)',
-      panelClass: 'app-dialog-panel',
+      maxHeight: 'calc(100vh - 32px)',
+      panelClass: ['app-dialog-panel', 'application-items-dialog-panel'],
+      backdropClass: 'application-items-dialog-backdrop',
     });
   }
 
@@ -138,6 +144,10 @@ export class ProfilePage implements OnInit {
 
   formatDate(value: string | null): string {
     return formatDate(value);
+  }
+
+  formatPhone(value: string): string {
+    return formatUkrainianPhoneInput(value);
   }
 
   formatApplicationNumber(application: UserApplication): string {

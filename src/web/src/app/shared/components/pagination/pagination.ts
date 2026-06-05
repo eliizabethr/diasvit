@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-pagination',
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './pagination.html',
   styleUrl: './pagination.scss',
 })
@@ -12,6 +13,8 @@ export class Pagination {
   readonly totalPages = input.required<number>();
   readonly total = input.required<number>();
   readonly limit = input.required<number>();
+  readonly showRange = input(true);
+  readonly iconArrows = input(false);
 
   readonly pageChange = output<number>();
 

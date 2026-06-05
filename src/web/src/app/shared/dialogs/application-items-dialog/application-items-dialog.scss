@@ -1,80 +1,89 @@
 .items-dialog {
-  position: relative;
-  width: min(100%, 640px);
-  padding: 30px 34px 28px;
-  color: #1f2f5f;
-}
-
-.items-dialog__close {
-  position: absolute;
-  top: 18px;
-  right: 22px;
-  width: 34px;
-  height: 34px;
-  border: none;
-  border-radius: 50%;
-  color: #1f2f5f;
-  background: transparent;
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.items-dialog__close:hover {
-  background: #eef4ff;
+  width: min(100%, 752px);
+  padding: 30px 48px 32px;
+  color: var(--app-color-text);
+  box-sizing: border-box;
 }
 
 .items-dialog__title {
-  margin: 0 42px 22px 0;
-  color: #0d6efd;
-  font-size: 28px;
-  font-weight: 700;
+  margin: 0 0 22px;
+  color: var(--app-color-primary);
+  font-size: 30px;
+  font-weight: 800;
   line-height: 1.2;
 }
 
 .items-dialog__table-wrapper {
-  max-height: 320px;
+  max-height: min(360px, calc(100vh - 260px));
   overflow: auto;
 }
 
 .items-dialog__table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 16px;
+  color: var(--app-color-text);
+  font-size: 17px;
+  line-height: 1.35;
 }
 
 .items-dialog__table th {
-  padding: 12px 0;
-  color: #1f2f5f;
-  font-weight: 700;
+  padding: 6px 0 12px;
+  color: var(--app-color-text);
+  font-weight: 800;
   text-align: left;
   border-bottom: 1px solid #d7e1f0;
 }
 
 .items-dialog__table td {
-  padding: 13px 0;
-  border-bottom: 1px solid #e5ebf5;
+  padding: 12px 0;
+  border-bottom: 1px solid #e1e7f1;
 }
 
 .items-dialog__table th:last-child,
 .items-dialog__table td:last-child {
+  width: 34%;
   text-align: center;
 }
 
 .items-dialog__actions {
   display: flex;
   justify-content: center;
-  margin-top: 26px;
+  margin-top: 30px;
 }
 
 .items-dialog__primary {
-  min-width: 240px;
-  min-height: 46px;
-  border-radius: 10px;
-  font-weight: 600;
+  width: min(100%, 314px);
+  min-height: 54px;
+  border-radius: var(--app-radius-control);
+  font-size: 17px;
+  font-weight: 800;
 }
 
 :host ::ng-deep .items-dialog__primary {
-  --mdc-filled-button-container-color: #0d6efd;
+  --mdc-filled-button-container-color: var(--app-color-primary);
   --mdc-filled-button-label-text-color: #ffffff;
+  --mdc-filled-button-container-shape: var(--app-radius-control);
+}
+
+@media (max-width: 640px) {
+  .items-dialog {
+    padding: 26px 22px 28px;
+  }
+
+  .items-dialog__title {
+    font-size: 25px;
+  }
+
+  .items-dialog__table {
+    font-size: 15px;
+  }
+
+  .items-dialog__table th:last-child,
+  .items-dialog__table td:last-child {
+    width: 38%;
+  }
+
+  .items-dialog__primary {
+    width: 100%;
+  }
 }

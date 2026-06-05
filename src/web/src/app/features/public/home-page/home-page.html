@@ -1,46 +1,9 @@
 <div id="home" class="home-page">
-  <header class="public-header">
-    <a class="public-header__logo" routerLink="/" aria-label="ДіаСвіт Запоріжжя">
-      <img src="/images/logo.svg" alt="ДіаСвіт Запоріжжя" />
-    </a>
-
-    <nav class="public-header__nav" aria-label="Основна навігація">
-      <a href="#home" (click)="scrollToSection($event, 'home')">Головна</a>
-      <a href="#about" (click)="scrollToSection($event, 'about')">Про нас</a>
-      <a href="#gallery" (click)="scrollToSection($event, 'gallery')">Галерея</a>
-      <a href="#application" (click)="scrollToSection($event, 'application')">Отримати допомогу</a>
-      <a href="#contacts" (click)="scrollToSection($event, 'contacts')">Контакти</a>
-    </nav>
-
-    <div class="public-header__actions">
-      @if (currentUser()) {
-        <a mat-flat-button class="public-header__button public-header__button--primary" routerLink="/profile">
-          Мій кабінет
-        </a>
-
-        <button
-          type="button"
-          mat-stroked-button
-          class="public-header__button public-header__button--outline"
-          (click)="logout()"
-        >
-          Вийти
-        </button>
-      } @else {
-        <a mat-flat-button class="public-header__button public-header__button--primary" routerLink="/auth/sign-in">
-          Увійти
-        </a>
-
-        <a
-          mat-stroked-button
-          class="public-header__button public-header__button--outline"
-          routerLink="/auth/register"
-        >
-          Зареєструватися
-        </a>
-      }
-    </div>
-  </header>
+  <app-public-header
+    [currentUser]="currentUser()"
+    [showAdminLink]="isAdmin()"
+    (logoutRequested)="logout()"
+  ></app-public-header>
 
   <main>
     <section class="hero-section" aria-label="ДіаСвіт Запоріжжя">

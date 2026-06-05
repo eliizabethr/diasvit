@@ -1,0 +1,148 @@
+.public-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 0 72px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 1px 0 rgba(13, 110, 253, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.public-header__logo {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.public-header__logo img {
+  width: 68px;
+  height: 68px;
+  display: block;
+}
+
+.public-header__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+}
+
+.public-header__nav a {
+  border: none;
+  color: var(--app-color-text);
+  background: transparent;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.public-header__nav a:hover {
+  color: var(--app-color-primary);
+}
+
+.public-header__actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 18px;
+}
+
+.public-header__button {
+  min-width: 108px;
+  min-height: 48px;
+  border-radius: var(--app-radius-control);
+  font-weight: 800;
+}
+
+:host ::ng-deep .public-header__button--primary {
+  --mdc-filled-button-container-color: var(--app-color-primary);
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+:host ::ng-deep .public-header__button--outline {
+  --mdc-outlined-button-outline-color: var(--app-color-primary);
+  --mdc-outlined-button-label-text-color: var(--app-color-primary);
+}
+
+:host ::ng-deep .public-header__button--logout {
+  --mdc-text-button-label-text-color: var(--app-color-primary);
+  min-width: 0;
+  padding: 0 8px;
+}
+
+.public-header__button--logout mat-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  font-size: 20px;
+}
+
+@media (max-width: 1180px) {
+  .public-header {
+    padding: 0 28px;
+  }
+
+  .public-header__nav {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 940px) {
+  .public-header {
+    flex-wrap: wrap;
+    min-height: 0;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .public-header__nav {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+}
+
+@media (max-width: 640px) {
+  .public-header {
+    gap: 14px;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .public-header__logo img {
+    width: 54px;
+    height: 54px;
+  }
+
+  .public-header__actions {
+    gap: 8px;
+  }
+
+  .public-header__button {
+    min-width: 0;
+    min-height: 40px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+
+  :host ::ng-deep .public-header__button--logout {
+    padding: 0 4px;
+  }
+
+  .public-header__button--logout mat-icon {
+    margin-right: 4px;
+  }
+
+  .public-header__nav a {
+    font-size: 14px;
+  }
+}

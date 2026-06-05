@@ -1,0 +1,53 @@
+<header class="public-header">
+  <a class="public-header__logo" routerLink="/" aria-label="ДіаСвіт Запоріжжя">
+    <img src="/images/logo.svg" alt="ДіаСвіт Запоріжжя" />
+  </a>
+
+  <nav class="public-header__nav" aria-label="Основна навігація">
+    @for (item of navItems; track item.sectionId) {
+      <a [href]="'#' + item.sectionId" (click)="navigateToSection($event, item.sectionId)">
+        {{ item.label }}
+      </a>
+    }
+  </nav>
+
+  <div class="public-header__actions">
+    @if (hasAuthenticatedActions()) {
+      @if (showAdminLink()) {
+        <a
+          mat-stroked-button
+          class="public-header__button public-header__button--outline"
+          routerLink="/admin"
+        >
+          Адміністрування
+        </a>
+      }
+
+      <a mat-flat-button class="public-header__button public-header__button--primary" routerLink="/profile">
+        Мій кабінет
+      </a>
+
+      <button
+        type="button"
+        mat-button
+        class="public-header__button public-header__button--logout"
+        (click)="requestLogout()"
+      >
+        <mat-icon aria-hidden="true">logout</mat-icon>
+        <span>Вийти</span>
+      </button>
+    } @else {
+      <a mat-flat-button class="public-header__button public-header__button--primary" routerLink="/auth/sign-in">
+        Увійти
+      </a>
+
+      <a
+        mat-stroked-button
+        class="public-header__button public-header__button--outline"
+        routerLink="/auth/register"
+      >
+        Зареєструватися
+      </a>
+    }
+  </div>
+</header>

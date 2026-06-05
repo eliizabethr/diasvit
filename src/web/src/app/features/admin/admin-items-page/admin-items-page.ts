@@ -135,9 +135,11 @@ export class AdminItemsPage implements OnInit, OnDestroy {
 
   openAddItemDialog(): void {
     const dialogRef = this.dialog.open(AddItemDialog, {
-      width: '680px',
+      width: 'min(740px, calc(100vw - 32px))',
       maxWidth: 'calc(100vw - 32px)',
-      panelClass: 'app-dialog-panel',
+      maxHeight: 'calc(100vh - 32px)',
+      panelClass: ['app-dialog-panel', 'add-item-dialog-panel'],
+      backdropClass: 'add-item-dialog-backdrop',
     });
 
     dialogRef.afterClosed().subscribe((item: InventoryItem | undefined) => {
@@ -172,9 +174,11 @@ export class AdminItemsPage implements OnInit, OnDestroy {
 
   openInventoryOperationDialog(): void {
     const dialogRef = this.dialog.open(InventoryOperationDialog, {
-      width: '720px',
+      width: 'min(740px, calc(100vw - 32px))',
       maxWidth: 'calc(100vw - 32px)',
-      panelClass: 'app-dialog-panel',
+      maxHeight: 'calc(100vh - 32px)',
+      panelClass: ['app-dialog-panel', 'inventory-operation-dialog-panel'],
+      backdropClass: 'inventory-operation-dialog-backdrop',
     });
 
     dialogRef.afterClosed().subscribe((operation: InventoryOperation | undefined) => {

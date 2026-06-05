@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
-import { StatusBadge } from './status-badge';
+import { PublicHeader } from './public-header';
 
-describe('StatusBadge', () => {
-  let component: StatusBadge;
-  let fixture: ComponentFixture<StatusBadge>;
+describe('PublicHeader', () => {
+  let component: PublicHeader;
+  let fixture: ComponentFixture<PublicHeader>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StatusBadge],
+      imports: [PublicHeader],
+      providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(StatusBadge);
-    fixture.componentRef.setInput('status', 'new');
+    fixture = TestBed.createComponent(PublicHeader);
     component = fixture.componentInstance;
     fixture.detectChanges();
     await fixture.whenStable();
