@@ -1,14 +1,7 @@
 <div class="comment-dialog">
-  <button
-    type="button"
-    class="comment-dialog__close"
-    aria-label="Закрити"
-    (click)="close()"
-  >
-    ×
-  </button>
-
   <h2 class="comment-dialog__title">{{ data.title }}</h2>
+
+  <p class="comment-dialog__label">Коментар</p>
 
   <div class="comment-dialog__body">
     <p>{{ data.comment }}</p>

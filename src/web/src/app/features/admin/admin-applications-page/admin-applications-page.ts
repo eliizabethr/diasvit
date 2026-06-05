@@ -212,9 +212,11 @@ export class AdminApplicationsPage implements OnInit, OnDestroy {
       data: {
         application,
       },
-      width: '680px',
+      width: 'min(752px, calc(100vw - 32px))',
       maxWidth: 'calc(100vw - 32px)',
-      panelClass: 'app-dialog-panel',
+      maxHeight: 'calc(100vh - 32px)',
+      panelClass: ['app-dialog-panel', 'application-items-dialog-panel'],
+      backdropClass: 'application-items-dialog-backdrop',
     });
   }
 
@@ -228,9 +230,11 @@ export class AdminApplicationsPage implements OnInit, OnDestroy {
         title: `Коментар до заявки ${this.formatApplicationNumber(application)}`,
         comment: application.comment,
       },
-      width: '600px',
+      width: 'min(740px, calc(100vw - 32px))',
       maxWidth: 'calc(100vw - 32px)',
-      panelClass: 'app-dialog-panel',
+      maxHeight: 'calc(100vh - 32px)',
+      panelClass: ['app-dialog-panel', 'application-comment-dialog-panel'],
+      backdropClass: 'application-comment-dialog-backdrop',
     });
   }
 

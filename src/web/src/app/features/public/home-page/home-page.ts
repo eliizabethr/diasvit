@@ -3,11 +3,11 @@ import {
   AfterViewInit,
   Component,
   OnInit,
+  computed,
   inject,
   signal,
 } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { finalize, switchMap } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +20,7 @@ import { UserItem } from '../../../core/models/item.model';
 import { ApplicationsService } from '../../../core/services/applications.service';
 import { ItemsService } from '../../../core/services/items.service';
 import { ApplicationForm } from '../../../shared/components/application-form/application-form';
+import { PublicHeader } from '../../../shared/components/public-header/public-header';
 import { ApplicationSuccessDialog } from '../../../shared/dialogs/application-success-dialog/application-success-dialog';
 import {
   SmsVerificationDialog,
@@ -42,10 +43,10 @@ import { environment } from '../../../../environments/environment';
   selector: 'app-home-page',
   imports: [
     CommonModule,
-    RouterLink,
     MatButtonModule,
     MatDialogModule,
     MatIconModule,
+    PublicHeader,
     ApplicationForm,
   ],
   templateUrl: './home-page.html',
@@ -60,6 +61,10 @@ export class HomePage implements OnInit, AfterViewInit {
   private readonly dialog = inject(MatDialog);
 
   readonly currentUser = this.currentUserService.currentUser;
+
+  readonly isAdmin = computed(() => {
+    return this.currentUser()?.roles.includes('admin') ?? false;
+  });
 
   readonly items = signal<UserItem[]>([]);
   readonly isLoadingItems = signal(false);

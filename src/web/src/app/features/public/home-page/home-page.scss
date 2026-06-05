@@ -12,42 +12,6 @@
   scroll-margin-top: 0;
 }
 
-.public-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  min-height: 92px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 28px;
-  padding: 0 72px;
-  background: rgba(255, 255, 255, 0.97);
-  box-shadow: 0 1px 0 rgba(13, 110, 253, 0.08);
-  backdrop-filter: blur(12px);
-}
-
-.public-header__logo {
-  display: inline-flex;
-  align-items: center;
-  flex: 0 0 auto;
-}
-
-.public-header__logo img {
-  width: 68px;
-  height: 68px;
-  display: block;
-}
-
-.public-header__nav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 34px;
-}
-
-.public-header__nav a,
-.public-header__nav button,
 .public-footer__nav a,
 .public-footer__nav button {
   border: none;
@@ -60,25 +24,9 @@
   cursor: pointer;
 }
 
-.public-header__nav a:hover,
-.public-header__nav button:hover,
 .public-footer__nav a:hover,
 .public-footer__nav button:hover {
   color: #0d6efd;
-}
-
-.public-header__actions {
-  display: flex;
-  align-items: center;
-  flex: 0 0 auto;
-  gap: 18px;
-}
-
-.public-header__button {
-  min-width: 108px;
-  min-height: 48px;
-  border-radius: 8px;
-  font-weight: 800;
 }
 
 .home-button {
@@ -87,15 +35,9 @@
   font-weight: 800;
 }
 
-:host ::ng-deep .home-button,
-:host ::ng-deep .public-header__button--primary {
+:host ::ng-deep .home-button {
   --mdc-filled-button-container-color: #0d6efd;
   --mdc-filled-button-label-text-color: #ffffff;
-}
-
-:host ::ng-deep .public-header__button--outline {
-  --mdc-outlined-button-outline-color: #0d6efd;
-  --mdc-outlined-button-label-text-color: #0d6efd;
 }
 
 .hero-section {
@@ -451,14 +393,6 @@
 }
 
 @media (max-width: 1180px) {
-  .public-header {
-    padding: 0 28px;
-  }
-
-  .public-header__nav {
-    gap: 18px;
-  }
-
   .story-section,
   .help-section,
   .stats-section,
@@ -490,21 +424,6 @@
 }
 
 @media (max-width: 940px) {
-  .public-header {
-    flex-wrap: wrap;
-    min-height: 0;
-    padding-top: 14px;
-    padding-bottom: 14px;
-  }
-
-  .public-header__nav {
-    order: 3;
-    width: 100%;
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding-bottom: 2px;
-  }
-
   .hero-section {
     min-height: 520px;
   }
@@ -530,33 +449,6 @@
 }
 
 @media (max-width: 640px) {
-  .public-header {
-    gap: 14px;
-    padding-left: 18px;
-    padding-right: 18px;
-  }
-
-  .public-header__logo img {
-    width: 54px;
-    height: 54px;
-  }
-
-  .public-header__actions {
-    gap: 8px;
-  }
-
-  .public-header__button {
-    min-width: 0;
-    min-height: 40px;
-    padding: 0 10px;
-    font-size: 13px;
-  }
-
-  .public-header__nav a,
-  .public-header__nav button {
-    font-size: 14px;
-  }
-
   .hero-section {
     min-height: 470px;
     padding: 64px 18px;

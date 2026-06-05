@@ -1,7 +1,13 @@
-<div class="pagination">
-  <p class="pagination__range">
-    {{ rangeText() }}
-  </p>
+<div
+  class="pagination"
+  [class.pagination--centered]="!showRange()"
+  [class.pagination--icon-arrows]="iconArrows()"
+>
+  @if (showRange()) {
+    <p class="pagination__range">
+      {{ rangeText() }}
+    </p>
+  }
 
   @if (totalPages() > 1) {
     <nav class="pagination__nav" aria-label="Пагінація">
@@ -11,7 +17,11 @@
         [disabled]="page() === 1"
         (click)="goToPage(page() - 1)"
       >
-        Назад
+        @if (iconArrows()) {
+          <mat-icon aria-hidden="true">chevron_left</mat-icon>
+        } @else {
+          Назад
+        }
       </button>
 
       @for (pageNumber of pages(); track pageNumber) {
@@ -35,7 +45,11 @@
         [disabled]="page() === totalPages()"
         (click)="goToPage(page() + 1)"
       >
-        Вперед
+        @if (iconArrows()) {
+          <mat-icon aria-hidden="true">chevron_right</mat-icon>
+        } @else {
+          Вперед
+        }
       </button>
     </nav>
   }
