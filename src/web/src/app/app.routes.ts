@@ -13,13 +13,6 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'application-success',
-    loadComponent: () =>
-      import(
-        './features/public/application-success-page/application-success-page'
-      ).then((m) => m.ApplicationSuccessPage),
-  },
-  {
     path: 'auth/sign-in',
     canActivate: [guestGuard],
     loadComponent: () =>

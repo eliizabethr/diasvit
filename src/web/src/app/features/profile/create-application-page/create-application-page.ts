@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
+
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { CurrentUserService } from '../../../core/auth/current-user.service';
 import { UserItem } from '../../../core/models/item.model';
 import { ApplicationsService } from '../../../core/services/applications.service';
 import { ItemsService } from '../../../core/services/items.service';
 import { ApplicationForm } from '../../../shared/components/application-form/application-form';
+import { ApplicationSuccessDialog } from '../../../shared/dialogs/application-success-dialog/application-success-dialog';
 import { getApiErrorMessage } from '../../../shared/utils/api-error.util';
 import {
   buildAidApplicationPayload,
@@ -22,7 +25,7 @@ import { formatFullName } from '../../../shared/utils/user.util';
 
 @Component({
   selector: 'app-create-application-page',
-  imports: [CommonModule, RouterLink, ApplicationForm],
+  imports: [CommonModule, RouterLink, MatDialogModule, ApplicationForm],
   templateUrl: './create-application-page.html',
   styleUrl: './create-application-page.scss',
 })
@@ -31,7 +34,7 @@ export class CreateApplicationPage implements OnInit {
   private readonly currentUserService = inject(CurrentUserService);
   private readonly itemsService = inject(ItemsService);
   private readonly applicationsService = inject(ApplicationsService);
-  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
 
   readonly currentUser = this.currentUserService.currentUser;
 
@@ -87,7 +90,7 @@ export class CreateApplicationPage implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.router.navigateByUrl('/application-success');
+          this.openApplicationSuccessDialog();
         },
         error: (error) => {
           this.errorMessage.set(getApiErrorMessage(error));
@@ -158,5 +161,17 @@ export class CreateApplicationPage implements OnInit {
     });
 
     setAidApplicationContactFieldsDisabled(this.form, true);
+  }
+
+  private openApplicationSuccessDialog(): void {
+    this.dialog.open(ApplicationSuccessDialog, {
+      width: 'min(1060px, calc(100vw - 32px))',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: 'calc(100vh - 64px)',
+      panelClass: ['app-dialog-panel', 'application-success-dialog-panel'],
+      backdropClass: 'application-success-dialog-backdrop',
+      disableClose: true,
+      autoFocus: false,
+    });
   }
 }

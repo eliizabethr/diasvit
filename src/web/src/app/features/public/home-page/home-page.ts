@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { finalize, switchMap } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +20,7 @@ import { UserItem } from '../../../core/models/item.model';
 import { ApplicationsService } from '../../../core/services/applications.service';
 import { ItemsService } from '../../../core/services/items.service';
 import { ApplicationForm } from '../../../shared/components/application-form/application-form';
+import { ApplicationSuccessDialog } from '../../../shared/dialogs/application-success-dialog/application-success-dialog';
 import {
   SmsVerificationDialog,
   SmsVerificationDialogResult,
@@ -57,7 +58,6 @@ export class HomePage implements OnInit, AfterViewInit {
   private readonly itemsService = inject(ItemsService);
   private readonly applicationsService = inject(ApplicationsService);
   private readonly dialog = inject(MatDialog);
-  private readonly router = inject(Router);
 
   readonly currentUser = this.currentUserService.currentUser;
 
@@ -297,7 +297,7 @@ export class HomePage implements OnInit, AfterViewInit {
       )
       .subscribe({
         next: () => {
-          this.router.navigateByUrl('/application-success');
+          this.openApplicationSuccessDialog();
         },
         error: (error) => {
           this.errorMessage.set(getApiErrorMessage(error));
@@ -317,12 +317,24 @@ export class HomePage implements OnInit, AfterViewInit {
       )
       .subscribe({
         next: () => {
-          this.router.navigateByUrl('/application-success');
+          this.openApplicationSuccessDialog();
         },
         error: (error) => {
           this.errorMessage.set(getApiErrorMessage(error));
         },
       });
+  }
+
+  private openApplicationSuccessDialog(): void {
+    this.dialog.open(ApplicationSuccessDialog, {
+      width: 'min(1060px, calc(100vw - 32px))',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: 'calc(100vh - 64px)',
+      panelClass: ['app-dialog-panel', 'application-success-dialog-panel'],
+      backdropClass: 'application-success-dialog-backdrop',
+      disableClose: true,
+      autoFocus: false,
+    });
   }
 
   getCurrentUserName(): string {

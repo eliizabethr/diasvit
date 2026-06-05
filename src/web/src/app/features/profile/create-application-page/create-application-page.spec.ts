@@ -3,16 +3,24 @@ import { signal } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
+import { MatDialog } from '@angular/material/dialog';
+
 import { CurrentUserService } from '../../../core/auth/current-user.service';
 import { ApplicationsService } from '../../../core/services/applications.service';
 import { ItemsService } from '../../../core/services/items.service';
+import { ApplicationSuccessDialog } from '../../../shared/dialogs/application-success-dialog/application-success-dialog';
 import { CreateApplicationPage } from './create-application-page';
 
 describe('CreateApplicationPage', () => {
   let component: CreateApplicationPage;
   let fixture: ComponentFixture<CreateApplicationPage>;
+  let createApplication: ReturnType<typeof vi.fn>;
+  let openDialog: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
+    createApplication = vi.fn();
+    openDialog = vi.fn();
+
     await TestBed.configureTestingModule({
       imports: [CreateApplicationPage],
       providers: [
@@ -49,11 +57,19 @@ describe('CreateApplicationPage', () => {
         {
           provide: ApplicationsService,
           useValue: {
-            createMyApplication: vi.fn(),
+            createMyApplication: createApplication,
           },
         },
       ],
-    }).compileComponents();
+    });
+
+    TestBed.overrideProvider(MatDialog, {
+      useValue: {
+        open: openDialog,
+      },
+    });
+
+    await TestBed.compileComponents();
 
     fixture = TestBed.createComponent(CreateApplicationPage);
     component = fixture.componentInstance;
@@ -63,5 +79,25 @@ describe('CreateApplicationPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should open the application success dialog after submission', () => {
+    createApplication.mockReturnValue(of({}));
+    component.form.controls.items.at(0).patchValue({
+      itemId: 1,
+      quantity: 1,
+    });
+
+    component.submit();
+
+    expect(openDialog).toHaveBeenCalledWith(ApplicationSuccessDialog, {
+      width: 'min(1060px, calc(100vw - 32px))',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: 'calc(100vh - 64px)',
+      panelClass: ['app-dialog-panel', 'application-success-dialog-panel'],
+      backdropClass: 'application-success-dialog-backdrop',
+      disableClose: true,
+      autoFocus: false,
+    });
   });
 });

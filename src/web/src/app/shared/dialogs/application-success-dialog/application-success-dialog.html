@@ -1,0 +1,45 @@
+<div class="application-success-dialog">
+  <section class="application-success-dialog__content">
+    <div class="application-success-dialog__check" aria-hidden="true">
+      <mat-icon>check</mat-icon>
+    </div>
+
+    <h2>Заявку успішно надіслано</h2>
+
+    <p class="application-success-dialog__text">
+      Найближчим часом адміністратор розгляне Вашу заявку. Слідкувати за статусом
+      заявки Ви можете у своєму кабінеті.<br />
+      Вхід — за номером телефону.
+    </p>
+
+    <div class="application-success-dialog__actions">
+      <button
+        type="button"
+        mat-flat-button
+        class="application-success-dialog__primary"
+        (click)="goToProfile()"
+      >
+        <mat-icon aria-hidden="true">person_outline</mat-icon>
+        <span>Перейти до кабінету</span>
+      </button>
+
+      <button
+        type="button"
+        mat-stroked-button
+        class="application-success-dialog__secondary"
+        (click)="goHome()"
+      >
+        <mat-icon aria-hidden="true">home</mat-icon>
+        <span>На головну</span>
+      </button>
+    </div>
+
+    <div class="application-success-dialog__divider" aria-hidden="true"></div>
+  </section>
+
+  <img
+    class="application-success-dialog__image"
+    src="/images/application.jpg"
+    alt="Родина, що отримує підтримку фонду"
+  />
+</div>
