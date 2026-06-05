@@ -1,174 +1,22 @@
 <div class="create-application-page">
   <header class="page-header">
     <a routerLink="/profile" class="page-header__back">← До кабінету</a>
-    <h1>Подання нової заявки</h1>
-    <p>Заповніть інформацію про необхідну допомогу.</p>
+    <h1>Заявка на отримання допомоги</h1>
+    <p>Залиште заявку на допомогу, і ми розглянемо її найближчим часом.</p>
   </header>
 
-  <main class="application-card">
-    @if (errorMessage()) {
-      <p class="application-card__error">
-        {{ errorMessage() }}
-      </p>
-    }
-
-    @if (isLoading()) {
-      <p class="application-card__muted">Завантаження даних...</p>
-    } @else {
-      <form class="application-form" [formGroup]="form" (ngSubmit)="submit()">
-        <section class="application-form__section">
-          <h2>1. Контактні дані</h2>
-
-          <div class="application-form__grid">
-            <mat-form-field appearance="outline">
-              <mat-label>ПІБ</mat-label>
-              <input matInput formControlName="fullName" />
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Номер телефону</mat-label>
-              <input matInput formControlName="phone" />
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Дата народження</mat-label>
-              <input matInput formControlName="dateOfBirth" />
-            </mat-form-field>
-          </div>
-        </section>
-
-        <section class="application-form__section">
-          <h2>2. Місце та спосіб отримання</h2>
-
-          <div class="application-form__radio-row">
-            <label>
-              <input type="radio" formControlName="fulfillmentType" value="pickup" />
-              Самовивіз
-            </label>
-
-            <label>
-              <input type="radio" formControlName="fulfillmentType" value="delivery" />
-              Доставка
-            </label>
-          </div>
-
-          @if (form.controls.fulfillmentType.value === 'delivery') {
-            <div class="application-form__grid">
-              <mat-form-field appearance="outline">
-                <mat-label>Місто</mat-label>
-                <input matInput formControlName="deliveryCity" placeholder="Введіть місто" />
-
-                @if (
-                  form.controls.deliveryCity.hasError('required') &&
-                  form.controls.deliveryCity.touched
-                ) {
-                  <mat-error>Введіть місто</mat-error>
-                }
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Відділення Нової пошти</mat-label>
-                <input
-                  matInput
-                  formControlName="deliveryAddress"
-                  placeholder="Наприклад: Відділення №12"
-                />
-
-                @if (
-                  form.controls.deliveryAddress.hasError('required') &&
-                  form.controls.deliveryAddress.touched
-                ) {
-                  <mat-error>Введіть відділення або адресу доставки</mat-error>
-                }
-              </mat-form-field>
-            </div>
-          } @else {
-            <p class="application-form__hint">
-              Самовивіз здійснюється у місті Запоріжжя.
-            </p>
-          }
-        </section>
-
-        <section class="application-form__section">
-          <div class="application-form__section-header">
-            <h2>3. Що саме потрібно?</h2>
-
-            <button type="button" mat-stroked-button (click)="addItem()">
-              Додати позицію
-            </button>
-          </div>
-
-          <div formArrayName="items" class="application-form__items">
-            @for (itemGroup of applicationItems.controls; track $index) {
-              <div class="application-form__item-row" [formGroupName]="$index">
-                <mat-form-field appearance="outline">
-                  <mat-label>Товар</mat-label>
-                  <mat-select formControlName="itemId">
-                    @for (item of items(); track item.id) {
-                      <mat-option [value]="item.id">
-                        {{ item.name }} ({{ item.category.name }})
-                      </mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Кількість</mat-label>
-                  <input matInput type="number" min="1" formControlName="quantity" />
-                </mat-form-field>
-
-                <button
-                  type="button"
-                  mat-stroked-button
-                  class="application-form__remove-button"
-                  [disabled]="applicationItems.length === 1"
-                  (click)="removeItem($index)"
-                >
-                  Видалити
-                </button>
-              </div>
-            }
-          </div>
-        </section>
-
-        <section class="application-form__section">
-          <h2>4. Додаткова інформація</h2>
-
-          <mat-form-field appearance="outline" class="application-form__comment">
-            <mat-label>Коментар</mat-label>
-            <textarea
-              matInput
-              rows="4"
-              formControlName="comment"
-              placeholder="Додайте важливу інформацію..."
-            ></textarea>
-          </mat-form-field>
-        </section>
-
-        <div class="application-form__actions">
-          <button
-            type="button"
-            mat-stroked-button
-            routerLink="/profile"
-            [disabled]="isSubmitting()"
-          >
-            Скасувати
-          </button>
-
-          <button
-            type="submit"
-            mat-flat-button
-            class="application-form__submit"
-            [disabled]="isSubmitting()"
-          >
-            @if (isSubmitting()) {
-              Надсилання...
-            } @else {
-              Надіслати заявку
-            }
-          </button>
-        </div>
-      </form>
-    }
+  <main class="application-shell">
+    <app-application-form
+      [form]="form"
+      [items]="items()"
+      [isLoadingItems]="isLoading()"
+      [isSubmitting]="isSubmitting()"
+      [errorMessage]="errorMessage()"
+      [currentUserName]="getCurrentUserName()"
+      cancelLink="/profile"
+      (submitted)="submit()"
+      (addItem)="addItem()"
+      (removeItem)="removeItem($event)"
+    ></app-application-form>
   </main>
 </div>
