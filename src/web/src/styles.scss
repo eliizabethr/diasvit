@@ -82,6 +82,16 @@ body {
   line-height: 1.25;
 }
 
+.sms-verification-dialog-panel .mat-mdc-dialog-container {
+  --mdc-dialog-container-shape: var(--app-radius-card);
+}
+
+.sms-verification-dialog-panel .mat-mdc-dialog-surface {
+  overflow: hidden;
+  border-radius: var(--app-radius-card);
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.22);
+}
+
 .application-success-dialog-backdrop {
   background: rgba(15, 23, 42, 0.48);
   backdrop-filter: blur(2px);

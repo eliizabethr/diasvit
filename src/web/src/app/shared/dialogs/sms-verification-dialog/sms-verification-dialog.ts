@@ -49,7 +49,7 @@ export class SmsVerificationDialog implements OnDestroy {
   readonly isVerifying = signal(false);
   readonly isResending = signal(false);
   readonly errorMessage = signal('');
-  readonly infoMessage = signal('Код підтвердження надіслано на вказаний номер.');
+  readonly infoMessage = signal('');
   readonly resendSecondsLeft = signal(30);
 
   private resendTimerId: ReturnType<typeof setInterval> | null = null;

@@ -10,6 +10,7 @@ import { CurrentUserService } from '../../../core/auth/current-user.service';
 import { ApplicationsService } from '../../../core/services/applications.service';
 import { ItemsService } from '../../../core/services/items.service';
 import { ApplicationSuccessDialog } from '../../../shared/dialogs/application-success-dialog/application-success-dialog';
+import { SmsVerificationDialog } from '../../../shared/dialogs/sms-verification-dialog/sms-verification-dialog';
 import { HomePage } from './home-page';
 
 describe('HomePage', () => {
@@ -86,6 +87,33 @@ describe('HomePage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should open the SMS verification dialog with the compact OTP panel config', () => {
+    component.form.patchValue({
+      phone: '+380993871212',
+    });
+
+    const openSmsDialog = (
+      component as unknown as { openSmsDialog: () => void }
+    ).openSmsDialog.bind(component);
+
+    openSmsDialog();
+
+    expect(openDialog).toHaveBeenCalledWith(SmsVerificationDialog, {
+      data: {
+        phone: '+380993871212',
+        purpose: 'register',
+        title: 'Введіть код підтвердження',
+        subtitle: 'Код із SMS надіслано на номер',
+      },
+      width: 'min(620px, calc(100vw - 24px))',
+      maxWidth: 'calc(100vw - 24px)',
+      maxHeight: 'calc(100vh - 24px)',
+      panelClass: ['app-dialog-panel', 'sms-verification-dialog-panel'],
+      disableClose: true,
+      autoFocus: 'first-tabbable',
+    });
   });
 
   it('should open the application success dialog after an authenticated submission', () => {
