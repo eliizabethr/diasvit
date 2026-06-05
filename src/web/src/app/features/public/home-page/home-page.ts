@@ -250,13 +250,15 @@ export class HomePage implements OnInit, AfterViewInit {
       data: {
         phone: formValue.phone,
         purpose: 'register',
-        title: 'Підтвердження заявки',
-        subtitle: 'Введіть SMS-код, щоб підтвердити номер телефону та надіслати заявку.',
+        title: 'Введіть код підтвердження',
+        subtitle: 'Код із SMS надіслано на номер',
       },
-      width: '600px',
-      maxWidth: 'calc(100vw - 32px)',
-      panelClass: 'app-dialog-panel',
+      width: 'min(620px, calc(100vw - 24px))',
+      maxWidth: 'calc(100vw - 24px)',
+      maxHeight: 'calc(100vh - 24px)',
+      panelClass: ['app-dialog-panel', 'sms-verification-dialog-panel'],
       disableClose: true,
+      autoFocus: 'first-tabbable',
     });
 
     dialogRef.afterClosed().subscribe((result: SmsVerificationDialogResult | undefined) => {
