@@ -1,34 +1,40 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild, inject, signal } from '@angular/core';
 import {
-  FormArray,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+  AfterViewInit,
+  Component,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
+import { NonNullableFormBuilder } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { finalize, switchMap } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import { CurrentUserService } from '../../../core/auth/current-user.service';
 import { UserItem } from '../../../core/models/item.model';
 import { ApplicationsService } from '../../../core/services/applications.service';
 import { ItemsService } from '../../../core/services/items.service';
+import { ApplicationForm } from '../../../shared/components/application-form/application-form';
 import {
   SmsVerificationDialog,
   SmsVerificationDialogResult,
 } from '../../../shared/dialogs/sms-verification-dialog/sms-verification-dialog';
 import { getApiErrorMessage } from '../../../shared/utils/api-error.util';
-import { formatDate } from '../../../shared/utils/date.util';
+import {
+  buildAidApplicationPayload,
+  createAidApplicationForm,
+  createAidApplicationItemGroup,
+  formatAidApplicationDateOfBirth,
+  parseAidApplicationDateOfBirth,
+  setAidApplicationContactFieldsDisabled,
+  updateAidApplicationDeliveryValidators,
+} from '../../../shared/utils/application-form.util';
 import { formatFullName } from '../../../shared/utils/user.util';
-import { FulfillmentType } from '../../../core/models/application.model';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -36,21 +42,15 @@ import { environment } from '../../../../environments/environment';
   imports: [
     CommonModule,
     RouterLink,
-    ReactiveFormsModule,
     MatButtonModule,
     MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatRadioModule,
-    MatSelectModule,
+    MatIconModule,
+    ApplicationForm,
   ],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
 })
-export class HomePage implements OnInit {
-  @ViewChild('applicationFormSection')
-  private readonly applicationFormSection?: ElementRef<HTMLElement>;
-
+export class HomePage implements OnInit, AfterViewInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly authService = inject(AuthService);
   private readonly currentUserService = inject(CurrentUserService);
@@ -66,54 +66,67 @@ export class HomePage implements OnInit {
   readonly isSubmitting = signal(false);
   readonly errorMessage = signal('');
 
-  readonly form = this.fb.group({
-    lastName: ['', [Validators.required, Validators.minLength(2)]],
-    firstName: ['', [Validators.required, Validators.minLength(2)]],
-    middleName: ['', [Validators.required, Validators.minLength(2)]],
-    dateOfBirth: ['', [Validators.required]],
-    phone: ['', [Validators.required, Validators.pattern(/^\+?380\d{9}$/)]],
-
-    fulfillmentType: ['pickup', [Validators.required]],
-    deliveryCity: [''],
-    deliveryAddress: [''],
-    pickupLocation: ['Запоріжжя'],
-    comment: [''],
-
-    items: this.fb.array([this.createItemGroup()]),
-  });
-
-  get applicationItems(): FormArray {
-    return this.form.controls.items;
-  }
+  readonly form = createAidApplicationForm(this.fb);
 
   ngOnInit(): void {
     this.loadItems();
     this.tryLoadCurrentUser();
 
     this.form.controls.fulfillmentType.valueChanges.subscribe((type) => {
-      this.updateDeliveryValidators(type);
+      updateAidApplicationDeliveryValidators(this.form, type);
     });
 
-    this.updateDeliveryValidators(this.form.controls.fulfillmentType.value);
+    updateAidApplicationDeliveryValidators(
+      this.form,
+      this.form.controls.fulfillmentType.value,
+    );
+  }
+
+  ngAfterViewInit(): void {
+    const sectionId = window.location.hash.slice(1);
+
+    if (!sectionId) {
+      return;
+    }
+
+    window.setTimeout(() => {
+      this.scrollToSectionById(sectionId);
+    });
   }
 
   scrollToApplicationForm(): void {
-    this.applicationFormSection?.nativeElement.scrollIntoView({
+    this.scrollToSectionById('application');
+  }
+
+  scrollToSection(event: Event, sectionId: string): void {
+    event.preventDefault();
+    this.scrollToSectionById(sectionId);
+    window.history.pushState(null, '', `#${sectionId}`);
+  }
+
+  private scrollToSectionById(sectionId: string): void {
+    const section = document.getElementById(sectionId);
+
+    if (!section) {
+      return;
+    }
+
+    section.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     });
   }
 
   addItem(): void {
-    this.applicationItems.push(this.createItemGroup());
+    this.form.controls.items.push(createAidApplicationItemGroup(this.fb));
   }
 
   removeItem(index: number): void {
-    if (this.applicationItems.length === 1) {
+    if (this.form.controls.items.length === 1) {
       return;
     }
 
-    this.applicationItems.removeAt(index);
+    this.form.controls.items.removeAt(index);
   }
 
   submitApplication(): void {
@@ -135,6 +148,7 @@ export class HomePage implements OnInit {
   logout(): void {
     this.authService.logout();
     this.currentUserService.clearCurrentUser();
+    setAidApplicationContactFieldsDisabled(this.form, false);
   }
 
   private tryLoadCurrentUser(): void {
@@ -169,15 +183,11 @@ export class HomePage implements OnInit {
       lastName: user.lastName,
       firstName: user.firstName,
       middleName: user.middleName,
-      dateOfBirth: user.dateOfBirth,
+      dateOfBirth: parseAidApplicationDateOfBirth(user.dateOfBirth),
       phone: user.phone,
     });
 
-    this.form.controls.lastName.disable();
-    this.form.controls.firstName.disable();
-    this.form.controls.middleName.disable();
-    this.form.controls.dateOfBirth.disable();
-    this.form.controls.phone.disable();
+    setAidApplicationContactFieldsDisabled(this.form, true);
   }
 
   private loadItems(): void {
@@ -270,13 +280,17 @@ export class HomePage implements OnInit {
           firstName: formValue.firstName,
           middleName: formValue.middleName,
           lastName: formValue.lastName,
-          dateOfBirth: formValue.dateOfBirth,
+          dateOfBirth: formatAidApplicationDateOfBirth(formValue.dateOfBirth),
         },
         verificationToken,
       )
       .pipe(
         switchMap(() => this.currentUserService.loadCurrentUser()),
-        switchMap(() => this.applicationsService.createMyApplication(this.buildApplicationPayload())),
+        switchMap(() =>
+          this.applicationsService.createMyApplication(
+            buildAidApplicationPayload(this.form),
+          ),
+        ),
         finalize(() => {
           this.isSubmitting.set(false);
         }),
@@ -295,7 +309,7 @@ export class HomePage implements OnInit {
     this.isSubmitting.set(true);
 
     this.applicationsService
-      .createMyApplication(this.buildApplicationPayload())
+      .createMyApplication(buildAidApplicationPayload(this.form))
       .pipe(
         finalize(() => {
           this.isSubmitting.set(false);
@@ -311,59 +325,9 @@ export class HomePage implements OnInit {
       });
   }
 
-  private buildApplicationPayload() {
-    const formValue = this.form.getRawValue();
-
-    return {
-      fulfillmentType: formValue.fulfillmentType as FulfillmentType,
-      deliveryCity:
-        formValue.fulfillmentType === 'delivery' ? formValue.deliveryCity : undefined,
-      deliveryAddress:
-        formValue.fulfillmentType === 'delivery' ? formValue.deliveryAddress : undefined,
-      pickupLocation:
-        formValue.fulfillmentType === 'pickup' ? formValue.pickupLocation : undefined,
-      comment: formValue.comment || undefined,
-      items: formValue.items.map((item) => ({
-        itemId: Number(item.itemId),
-        quantity: Number(item.quantity),
-      })),
-    };
-  }
-
-  private createItemGroup() {
-    return this.fb.group({
-      itemId: [0, [Validators.required, Validators.min(1)]],
-      quantity: [1, [Validators.required, Validators.min(1)]],
-    });
-  }
-
-  private updateDeliveryValidators(type: string): void {
-    const deliveryCityControl = this.form.controls.deliveryCity;
-    const deliveryAddressControl = this.form.controls.deliveryAddress;
-
-    if (type === 'delivery') {
-      deliveryCityControl.setValidators([Validators.required]);
-      deliveryAddressControl.setValidators([Validators.required]);
-    } else {
-      deliveryCityControl.clearValidators();
-      deliveryAddressControl.clearValidators();
-      deliveryCityControl.setValue('');
-      deliveryAddressControl.setValue('');
-    }
-
-    deliveryCityControl.updateValueAndValidity();
-    deliveryAddressControl.updateValueAndValidity();
-  }
-
   getCurrentUserName(): string {
     const user = this.currentUser();
 
     return user ? formatFullName(user) : '';
-  }
-
-  getCurrentUserBirthDate(): string {
-    const user = this.currentUser();
-
-    return user ? formatDate(user.dateOfBirth) : '';
   }
 }

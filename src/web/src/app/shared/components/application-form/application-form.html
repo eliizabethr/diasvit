@@ -1,0 +1,230 @@
+<div class="application-form-layout">
+  <form class="application-form" [formGroup]="form()" (ngSubmit)="submitted.emit()">
+    @if (errorMessage()) {
+      <p class="application-form__error">
+        {{ errorMessage() }}
+      </p>
+    }
+
+    <section class="application-form__section">
+      <div class="application-form__section-title">
+        <span class="application-form__icon">
+          <mat-icon aria-hidden="true">person_outline</mat-icon>
+        </span>
+        <h3>1. Контактні дані</h3>
+      </div>
+
+      @if (currentUserName()) {
+        <p class="application-form__hint">
+          Ви подаєте заявку як {{ currentUserName() }}.
+        </p>
+      }
+
+      <div class="application-form__grid application-form__grid--contact">
+        <mat-form-field appearance="outline">
+          <mat-label>Прізвище</mat-label>
+          <input matInput formControlName="lastName" placeholder="Введіть Ваше прізвище" />
+
+          @if (form().controls.lastName.invalid && form().controls.lastName.touched) {
+            <mat-error>Введіть прізвище</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Ім’я</mat-label>
+          <input matInput formControlName="firstName" placeholder="Введіть Ваше ім’я" />
+
+          @if (form().controls.firstName.invalid && form().controls.firstName.touched) {
+            <mat-error>Введіть ім’я</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>По-батькові</mat-label>
+          <input matInput formControlName="middleName" placeholder="Введіть Ваше по-батькові" />
+
+          @if (form().controls.middleName.invalid && form().controls.middleName.touched) {
+            <mat-error>Введіть по батькові</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Дата народження</mat-label>
+          <input
+            matInput
+            readonly
+            formControlName="dateOfBirth"
+            placeholder="дд.мм.рррр"
+            [matDatepicker]="birthDatePicker"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="birthDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #birthDatePicker></mat-datepicker>
+
+          @if (form().controls.dateOfBirth.invalid && form().controls.dateOfBirth.touched) {
+            <mat-error>Оберіть дату народження</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Номер телефону</mat-label>
+          <input matInput type="tel" formControlName="phone" placeholder="+380XXXXXXXXX" />
+
+          @if (form().controls.phone.hasError('required') && form().controls.phone.touched) {
+            <mat-error>Введіть номер телефону</mat-error>
+          }
+
+          @if (form().controls.phone.hasError('pattern') && form().controls.phone.touched) {
+            <mat-error>Формат: +380XXXXXXXXX</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </section>
+
+    <section class="application-form__section">
+      <div class="application-form__section-title">
+        <span class="application-form__icon">
+          <mat-icon aria-hidden="true">location_on</mat-icon>
+        </span>
+        <h3>2. Місце та спосіб отримання</h3>
+      </div>
+
+      <p class="application-form__field-label">Місто *</p>
+      <mat-radio-group class="application-form__radio-row" formControlName="fulfillmentType">
+        <mat-radio-button value="pickup">Самовивіз</mat-radio-button>
+        <mat-radio-button value="delivery">Доставка</mat-radio-button>
+      </mat-radio-group>
+
+      @if (form().controls.fulfillmentType.value === 'delivery') {
+        <div class="application-form__grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Місто</mat-label>
+            <input matInput formControlName="deliveryCity" placeholder="Введіть місто" />
+
+            @if (form().controls.deliveryCity.invalid && form().controls.deliveryCity.touched) {
+              <mat-error>Введіть місто</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Відділення Нової пошти</mat-label>
+            <input
+              matInput
+              formControlName="deliveryAddress"
+              placeholder="Введіть номер відділення"
+            />
+
+            @if (form().controls.deliveryAddress.invalid && form().controls.deliveryAddress.touched) {
+              <mat-error>Введіть відділення або адресу</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      } @else {
+        <p class="application-form__hint">
+          Самовивіз здійснюється у місті Запоріжжя.
+        </p>
+      }
+    </section>
+
+    <section class="application-form__section">
+      <div class="application-form__section-header">
+        <div class="application-form__section-title">
+          <span class="application-form__icon">
+            <mat-icon aria-hidden="true">favorite_border</mat-icon>
+          </span>
+          <h3>3. Що саме потрібно?</h3>
+        </div>
+
+        <button type="button" mat-stroked-button class="application-form__add" (click)="addItem.emit()">
+          Додати позицію
+        </button>
+      </div>
+
+      @if (isLoadingItems()) {
+        <p class="application-form__muted">Завантаження товарів...</p>
+      } @else {
+        <div formArrayName="items" class="application-form__items">
+          @for (itemGroup of applicationItems().controls; track $index) {
+            <div class="application-form__item-row" [formGroupName]="$index">
+              <mat-form-field appearance="outline">
+                <mat-label>Товар</mat-label>
+                <mat-select formControlName="itemId">
+                  @for (item of items(); track item.id) {
+                    <mat-option [value]="item.id">
+                      {{ item.name }} ({{ item.category.name }})
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Кількість</mat-label>
+                <input matInput type="number" min="1" formControlName="quantity" />
+              </mat-form-field>
+
+              <button
+                type="button"
+                mat-icon-button
+                class="application-form__remove-button"
+                aria-label="Видалити позицію"
+                [disabled]="applicationItems().length === 1"
+                (click)="removeItem.emit($index)"
+              >
+                <mat-icon aria-hidden="true">delete_outline</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="application-form__section">
+      <div class="application-form__section-title">
+        <span class="application-form__icon">
+          <mat-icon aria-hidden="true">chat_bubble_outline</mat-icon>
+        </span>
+        <h3>4. Додаткова інформація</h3>
+      </div>
+
+      <mat-form-field appearance="outline" class="application-form__comment">
+        <mat-label>Коментар</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          formControlName="comment"
+          placeholder="Додайте важливу інформацію..."
+          maxlength="500"
+        ></textarea>
+        <mat-hint align="end">{{ form().controls.comment.value.length }}/500</mat-hint>
+      </mat-form-field>
+    </section>
+
+    <p class="application-form__required">* Обов’язкові поля</p>
+
+    <div class="application-form__actions">
+      @if (cancelLink()) {
+        <a mat-stroked-button [routerLink]="cancelLink()" [class.application-form__disabled]="isSubmitting()">
+          Скасувати
+        </a>
+      }
+
+      <button
+        type="submit"
+        mat-flat-button
+        class="application-form__submit"
+        [disabled]="isSubmitting()"
+      >
+        @if (isSubmitting()) {
+          {{ submittingLabel() }}
+        } @else {
+          {{ submitLabel() }}
+        }
+      </button>
+    </div>
+  </form>
+
+  <img
+    class="application-form-layout__image"
+    src="/images/application.jpg"
+    alt="Родина, що отримує підтримку фонду"
+  />
+</div>

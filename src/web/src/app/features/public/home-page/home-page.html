@@ -1,32 +1,41 @@
-<div class="home-page">
+<div id="home" class="home-page">
   <header class="public-header">
-    <a class="public-header__logo" routerLink="/">
-      <span class="public-header__logo-mark">Д</span>
-      <span class="public-header__logo-text">Діасвіт Запоріжжя</span>
+    <a class="public-header__logo" routerLink="/" aria-label="ДіаСвіт Запоріжжя">
+      <img src="/images/logo.svg" alt="ДіаСвіт Запоріжжя" />
     </a>
 
-    <nav class="public-header__nav">
-      <a href="#about">Про нас</a>
-      <a href="#gallery">Галерея</a>
-      <button type="button" (click)="scrollToApplicationForm()">Отримати допомогу</button>
-      <a href="#contacts">Контакти</a>
+    <nav class="public-header__nav" aria-label="Основна навігація">
+      <a href="#home" (click)="scrollToSection($event, 'home')">Головна</a>
+      <a href="#about" (click)="scrollToSection($event, 'about')">Про нас</a>
+      <a href="#gallery" (click)="scrollToSection($event, 'gallery')">Галерея</a>
+      <a href="#application" (click)="scrollToSection($event, 'application')">Отримати допомогу</a>
+      <a href="#contacts" (click)="scrollToSection($event, 'contacts')">Контакти</a>
     </nav>
 
     <div class="public-header__actions">
       @if (currentUser()) {
-        <a class="public-header__button public-header__button--primary" routerLink="/profile">
+        <a mat-flat-button class="public-header__button public-header__button--primary" routerLink="/profile">
           Мій кабінет
         </a>
 
-        <button type="button" class="public-header__logout" (click)="logout()">
+        <button
+          type="button"
+          mat-stroked-button
+          class="public-header__button public-header__button--outline"
+          (click)="logout()"
+        >
           Вийти
         </button>
       } @else {
-        <a class="public-header__button public-header__button--outline" routerLink="/auth/sign-in">
+        <a mat-flat-button class="public-header__button public-header__button--primary" routerLink="/auth/sign-in">
           Увійти
         </a>
 
-        <a class="public-header__button public-header__button--primary" routerLink="/auth/register">
+        <a
+          mat-stroked-button
+          class="public-header__button public-header__button--outline"
+          routerLink="/auth/register"
+        >
           Зареєструватися
         </a>
       }
@@ -34,23 +43,52 @@
   </header>
 
   <main>
-    <section class="hero-section">
+    <section class="hero-section" aria-label="ДіаСвіт Запоріжжя">
       <div class="hero-section__content">
-        <p class="hero-section__eyebrow">Благодійний фонд</p>
-        <h1>Допомога людям з діабетом у Запоріжжі</h1>
-        <p class="hero-section__text">
-          Ми підтримуємо людей, які потребують ліків, тест-смужок, сенсорів та іншої допомоги
-          для контролю діабету.
+        <h1>Разом створюємо простір підтримки та турботи</h1>
+        <p>
+          Ми поруч із людьми, які живуть із цукровим діабетом, щоб допомагати,
+          інформувати та підтримувати їх щодня
         </p>
 
-        <div class="hero-section__actions">
-          <button type="button" mat-flat-button class="hero-section__primary" (click)="scrollToApplicationForm()">
-            Отримати допомогу
-          </button>
+        <a
+          mat-flat-button
+          class="home-button"
+          href="#application"
+          (click)="scrollToSection($event, 'application')"
+        >
+          Отримати допомогу
+        </a>
+      </div>
+    </section>
+
+    <section id="about" class="story-section">
+      <div class="story-section__inner">
+        <img
+          class="story-section__image"
+          src="/images/history.png"
+          alt="Засновниця фонду з блакитною кулькою"
+        />
+
+        <div class="story-section__content">
+          <h2>Історія допомоги, що стала фондом</h2>
+          <p>
+            Після початку повномасштабного вторгнення у 2022 році Розсоха Світлана
+            Олександрівна почала займатися волонтерством та допомагати людям із
+            цукровим діабетом знаходити необхідні ліки й підтримку. З часом ця
+            допомога стала системною, а кількість людей, які потребували підтримки,
+            зростала.
+          </p>
+          <p>
+            У 2023 році Світлана Олександрівна вирішила створити офіційний
+            благодійний фонд «Діасвіт Запоріжжя», щоб надавати допомогу більш
+            організовано, об’єднувати людей навколо спільної мети та підтримувати
+            тих, хто щодня живе з діабетом.
+          </p>
 
           <a
-            mat-stroked-button
-            class="hero-section__secondary"
+            mat-flat-button
+            class="home-button story-section__button"
             href="https://www.facebook.com/"
             target="_blank"
             rel="noopener noreferrer"
@@ -59,277 +97,180 @@
           </a>
         </div>
       </div>
+    </section>
 
-      <div class="hero-section__image">
-        <div class="hero-section__image-placeholder">
-          Допомога поруч
+    <section id="help" class="help-section">
+      <div class="help-section__inner">
+        <div class="help-section__content">
+          <h2>Потрібна допомога?<br />Ми поруч!</h2>
+          <p>
+            Звертайтеся до нас, якщо вам або вашим близьким потрібна допомога з
+            пошуком засобів, необхідних для щоденного контролю діабету:
+          </p>
+
+          <ul>
+            <li>Інсуліни</li>
+            <li>Глюкометри та тест-смужки</li>
+            <li>Сенсори моніторингу глюкози</li>
+            <li>Інсулінові помпи</li>
+            <li>Вітаміни</li>
+            <li>Таблетовані препарати</li>
+            <li>Інше необхідне</li>
+          </ul>
+
+          <a
+            mat-flat-button
+            class="home-button"
+            href="#application"
+            (click)="scrollToSection($event, 'application')"
+          >
+            Звернутися по допомогу
+          </a>
         </div>
+
+        <img
+          class="help-section__image"
+          src="/images/aid.png"
+          alt="Засоби для щоденного контролю діабету"
+        />
       </div>
     </section>
 
-    <section id="about" class="about-section">
-      <div>
-        <p class="section-label">Про фонд</p>
-        <h2>Ми допомагаємо тим, хто потребує підтримки щодня</h2>
+    <section id="stats" class="stats-section" aria-label="Результати роботи фонду">
+      <div class="stats-section__inner">
+        <article>
+          <strong>2+</strong>
+          <span>роки підтримки</span>
+        </article>
+
+        <article>
+          <strong>500+</strong>
+          <span>опрацьованих звернень</span>
+        </article>
+
+        <article>
+          <strong>24/7</strong>
+          <span>на зв’язку</span>
+        </article>
+
+        <article>
+          <strong>100+</strong>
+          <span>родин отримали допомогу</span>
+        </article>
       </div>
-
-      <p>
-        Фонд допомагає людям з діабетом отримувати необхідні товари та підтримку.
-        Заявка подається онлайн, а її статус можна переглядати в особистому кабінеті.
-      </p>
-    </section>
-
-    <section class="help-section">
-      <div class="help-section__card">
-        <h2>Потрібна допомога?</h2>
-        <p>
-          Заповніть коротку форму, вкажіть необхідні товари та спосіб отримання.
-          Адміністратор розгляне заявку та оновить її статус.
-        </p>
-
-        <button type="button" mat-flat-button class="help-section__button" (click)="scrollToApplicationForm()">
-          Звернутися по допомогу
-        </button>
-      </div>
-    </section>
-
-    <section class="stats-section">
-      <article>
-        <strong>500+</strong>
-        <span>звернень опрацьовано</span>
-      </article>
-
-      <article>
-        <strong>6</strong>
-        <span>категорій допомоги</span>
-      </article>
-
-      <article>
-        <strong>24/7</strong>
-        <span>доступ до онлайн-заявки</span>
-      </article>
     </section>
 
     <section id="gallery" class="gallery-section">
-      <div class="gallery-section__header">
-        <div>
-          <p class="section-label">Галерея</p>
-          <h2>Допомога в дії</h2>
+      <div class="gallery-section__inner">
+        <div class="gallery-section__header">
+          <div>
+            <h2>Галерея</h2>
+            <p>
+              Світлини з діяльності фонду, подій, допомоги та важливих моментів
+              нашої роботи
+            </p>
+          </div>
+
+          <a
+            mat-flat-button
+            class="home-button gallery-section__button"
+            href="https://www.instagram.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Переглянути усю галерею
+          </a>
         </div>
 
-        <a
-          href="https://www.instagram.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Переглянути усю галерею →
-        </a>
-      </div>
-
-      <div class="gallery-grid">
-        <div class="gallery-grid__item">Фото 1</div>
-        <div class="gallery-grid__item">Фото 2</div>
-        <div class="gallery-grid__item">Фото 3</div>
+        <div class="gallery-grid">
+          @for (item of [1, 2, 3, 4, 5, 6, 7, 8]; track item) {
+            <img src="/images/gallery-thumbnail.jpg" alt="Світлина з діяльності фонду" />
+          }
+        </div>
       </div>
     </section>
 
-    <section #applicationFormSection class="application-section">
+    <section id="application" class="application-section">
       <div class="application-section__intro">
-        <p class="section-label">Заявка</p>
-        <h2>Подати заявку на отримання допомоги</h2>
-        <p>
-          Вкажіть контактні дані, необхідні товари та спосіб отримання.
-          Якщо Ви вже авторизовані, Ваші дані будуть заповнені автоматично.
-        </p>
+        <h2>Заявка на отримання допомоги</h2>
+        <p>Залиште заявку на допомогу, і ми розглянемо її найближчим часом</p>
       </div>
 
-      <form class="application-form" [formGroup]="form" (ngSubmit)="submitApplication()">
-        @if (errorMessage()) {
-          <p class="application-form__error">
-            {{ errorMessage() }}
-          </p>
-        }
-
-        <section class="application-form__section">
-          <h3>1. Контактні дані</h3>
-
-          @if (currentUser()) {
-            <p class="application-form__hint">
-              Ви подаєте заявку як {{ getCurrentUserName() }}.
-            </p>
-          }
-
-          <div class="application-form__grid">
-            <mat-form-field appearance="outline">
-              <mat-label>Прізвище</mat-label>
-              <input matInput formControlName="lastName" />
-
-              @if (form.controls.lastName.invalid && form.controls.lastName.touched) {
-                <mat-error>Введіть прізвище</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Ім’я</mat-label>
-              <input matInput formControlName="firstName" />
-
-              @if (form.controls.firstName.invalid && form.controls.firstName.touched) {
-                <mat-error>Введіть ім’я</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>По батькові</mat-label>
-              <input matInput formControlName="middleName" />
-
-              @if (form.controls.middleName.invalid && form.controls.middleName.touched) {
-                <mat-error>Введіть по батькові</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Дата народження</mat-label>
-              <input matInput type="date" formControlName="dateOfBirth" />
-
-              @if (form.controls.dateOfBirth.invalid && form.controls.dateOfBirth.touched) {
-                <mat-error>Оберіть дату народження</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Номер телефону</mat-label>
-              <input matInput type="tel" formControlName="phone" placeholder="+380XXXXXXXXX" />
-
-              @if (form.controls.phone.hasError('required') && form.controls.phone.touched) {
-                <mat-error>Введіть номер телефону</mat-error>
-              }
-
-              @if (form.controls.phone.hasError('pattern') && form.controls.phone.touched) {
-                <mat-error>Формат: +380XXXXXXXXX</mat-error>
-              }
-            </mat-form-field>
-          </div>
-        </section>
-
-        <section class="application-form__section">
-          <h3>2. Спосіб отримання</h3>
-
-          <mat-radio-group class="application-form__radio-row" formControlName="fulfillmentType">
-            <mat-radio-button value="pickup">Самовивіз</mat-radio-button>
-            <mat-radio-button value="delivery">Доставка</mat-radio-button>
-          </mat-radio-group>
-
-          @if (form.controls.fulfillmentType.value === 'delivery') {
-            <div class="application-form__grid">
-              <mat-form-field appearance="outline">
-                <mat-label>Місто</mat-label>
-                <input matInput formControlName="deliveryCity" />
-
-                @if (form.controls.deliveryCity.invalid && form.controls.deliveryCity.touched) {
-                  <mat-error>Введіть місто</mat-error>
-                }
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Відділення Нової пошти</mat-label>
-                <input matInput formControlName="deliveryAddress" />
-
-                @if (form.controls.deliveryAddress.invalid && form.controls.deliveryAddress.touched) {
-                  <mat-error>Введіть відділення або адресу</mat-error>
-                }
-              </mat-form-field>
-            </div>
-          } @else {
-            <p class="application-form__hint">
-              Самовивіз здійснюється у місті Запоріжжя.
-            </p>
-          }
-        </section>
-
-        <section class="application-form__section">
-          <div class="application-form__section-header">
-            <h3>3. Що саме потрібно?</h3>
-
-            <button type="button" mat-stroked-button (click)="addItem()">
-              Додати позицію
-            </button>
-          </div>
-
-          @if (isLoadingItems()) {
-            <p class="application-form__muted">Завантаження товарів...</p>
-          } @else {
-            <div formArrayName="items" class="application-form__items">
-              @for (itemGroup of applicationItems.controls; track $index) {
-                <div class="application-form__item-row" [formGroupName]="$index">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Товар</mat-label>
-                    <mat-select formControlName="itemId">
-                      @for (item of items(); track item.id) {
-                        <mat-option [value]="item.id">
-                          {{ item.name }} ({{ item.category.name }})
-                        </mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline">
-                    <mat-label>Кількість</mat-label>
-                    <input matInput type="number" min="1" formControlName="quantity" />
-                  </mat-form-field>
-
-                  <button
-                    type="button"
-                    mat-stroked-button
-                    class="application-form__remove-button"
-                    [disabled]="applicationItems.length === 1"
-                    (click)="removeItem($index)"
-                  >
-                    Видалити
-                  </button>
-                </div>
-              }
-            </div>
-          }
-        </section>
-
-        <section class="application-form__section">
-          <h3>4. Додаткова інформація</h3>
-
-          <mat-form-field appearance="outline" class="application-form__comment">
-            <mat-label>Коментар</mat-label>
-            <textarea
-              matInput
-              rows="4"
-              formControlName="comment"
-              placeholder="Додайте важливу інформацію..."
-            ></textarea>
-          </mat-form-field>
-        </section>
-
-        <div class="application-form__actions">
-          <button
-            type="submit"
-            mat-flat-button
-            class="application-form__submit"
-            [disabled]="isSubmitting()"
-          >
-            @if (isSubmitting()) {
-              Надсилання...
-            } @else {
-              Надіслати заявку
-            }
-          </button>
-        </div>
-      </form>
+      <app-application-form
+        [form]="form"
+        [items]="items()"
+        [isLoadingItems]="isLoadingItems()"
+        [isSubmitting]="isSubmitting()"
+        [errorMessage]="errorMessage()"
+        [currentUserName]="getCurrentUserName()"
+        (submitted)="submitApplication()"
+        (addItem)="addItem()"
+        (removeItem)="removeItem($event)"
+      ></app-application-form>
     </section>
   </main>
 
   <footer id="contacts" class="public-footer">
-    <div>
-      <strong>Діасвіт Запоріжжя</strong>
-      <p>Благодійна підтримка людей з діабетом</p>
+    <div class="public-footer__main">
+      <section class="public-footer__about">
+        <img src="/images/logo.svg" alt="ДіаСвіт Запоріжжя" />
+        <p>
+          Ви не одні — ми завжди поруч, щоб підтримати, допомогти знайти необхідне
+          та дати відчуття турботи й розуміння на шляху життя з діабетом.
+        </p>
+      </section>
+
+      <nav class="public-footer__nav" aria-label="Навігація у футері">
+        <h2>Навігація</h2>
+        <a href="#home" (click)="scrollToSection($event, 'home')">Головна</a>
+        <a href="#about" (click)="scrollToSection($event, 'about')">Про нас</a>
+        <a href="#gallery" (click)="scrollToSection($event, 'gallery')">Галерея</a>
+        <a href="#application" (click)="scrollToSection($event, 'application')">Отримати допомогу</a>
+      </nav>
+
+      <section class="public-footer__contacts">
+        <h2>Контакти</h2>
+
+        <a href="https://maps.google.com/?q=вул. Фабрична, 12, Запоріжжя" target="_blank" rel="noopener noreferrer">
+          <span><mat-icon aria-hidden="true">home</mat-icon></span>
+          вул. Фабрична, 12, м. Запоріжжя, Україна, 69063
+        </a>
+
+        <a href="tel:+380993871212">
+          <span><mat-icon aria-hidden="true">call</mat-icon></span>
+          +380993871212
+        </a>
+
+        <a href="mailto:ukrainediabet1@gmail.com">
+          <span><mat-icon aria-hidden="true">mail_outline</mat-icon></span>
+          ukrainediabet1@gmail.com
+        </a>
+
+        <div class="public-footer__contact-row">
+          <span><mat-icon aria-hidden="true">schedule</mat-icon></span>
+          <p>
+            Пн-Пт: 9:00-18:00<br />
+            Сб-Нд: 10:00-15:00
+          </p>
+        </div>
+
+        <div class="public-footer__socials" aria-label="Соціальні мережі">
+          <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <mat-icon aria-hidden="true">facebook</mat-icon>
+          </a>
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg class="public-footer__instagram-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle class="public-footer__instagram-dot" cx="17" cy="7" r="1.2" />
+            </svg>
+          </a>
+        </div>
+      </section>
     </div>
 
-    <p>Контакти фонду можна буде розмістити тут.</p>
+    <div class="public-footer__bottom">
+      © 2023-2026 DiaSvit Zaporizhzhia. All rights reserved.
+    </div>
   </footer>
 </div>
